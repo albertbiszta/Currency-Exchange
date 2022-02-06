@@ -45,22 +45,17 @@ class ExchangeController extends AbstractController
             foreach (['primaryCurrency', 'targetCurrency', 'amount'] as $field) {
                 $formData[$field] = $form[$field]->getData();
             }
-            $this->exchangeService->createExchange($formData);
-            $this->addFlash('success', 'Currency exchange completed successfully');
+            if ($this->userAccountService->userAccountExists($formData['primaryCurrency']) && $this->userAccountService->isAccountBalanceSufficient($formData['primaryCurrency'], $formData['amount'])) {
+                $this->exchangeService->createExchange($formData);
+                $this->addFlash('success', 'Currency exchange completed successfully');
+            } else {
+                $this->addFlash('error', 'Insufficient funds or account in this currency does not exist');
+            }
             return $this->redirectToRoute('exchange');
-
-              //  $this->addFlash('error', 'Insufficient funds!');
         }
 
         return $this->render('exchange/index.html.twig', [
             'exchange_form' => $form->createView(),
         ]);
     }
-
-    #[Route('/test', name: 'test')]
-    public function test(): Response
-    {
-       return new Response((string) $this->userAccountService->isAccountBalanceSufficient('usd', 12));
-    }
-
 }

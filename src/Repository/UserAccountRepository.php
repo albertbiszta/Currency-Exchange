@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\UserAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @method UserAccount|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +19,11 @@ class UserAccountRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, UserAccount::class);
+    }
+
+    public function getUserAccountByCurrency(string $currency, UserInterface|User $user): ?UserAccount
+    {
+        return $this->findOneBy(['User' => $user, 'currency' => $currency]);
     }
 
     // /**

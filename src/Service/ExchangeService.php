@@ -3,15 +3,17 @@
 namespace App\Service;
 
 use App\Entity\Exchange;
+use App\Entity\UserAccount;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Security\Core\Security;
 
 class ExchangeService
 {
     private $user;
 
-    public function __construct(private CurrencyService $currencyService, private Security $security, private EntityManagerInterface $entityManager)
+    public function __construct(private CurrencyService $currencyService, private UserAccountService $userAccountService, private Security $security, private EntityManagerInterface $entityManager)
     {
         $this->user = $this->security->getUser();
     }
@@ -26,21 +28,28 @@ class ExchangeService
         return round(($formData['amount'] * $primaryCurrencyRate) / $targetCurrencyRate, 2);
     }
 
+    /**
+     * @throws Exception
+     */
     public function createExchange(array $formData): void
     {
-        $exchange = new Exchange();
-        $exchange
-            ->setUser($this->user)
-            ->setPrimaryCurrency($formData['primaryCurrency'])
-            ->setTargetCurrency($formData['targetCurrency'])
-            ->setAmount($formData['amount'])
-            ->setAmountAfterExchange($this->getCurrencyConversion($formData))
-            ->setDate(new \DateTime());
+        try {
+            $amountAfterExchange = $this->getCurrencyConversion($formData);
+            $exchange = new Exchange();
+            $exchange
+                ->setUser($this->user)
+                ->setPrimaryCurrency($formData['primaryCurrency'])
+                ->setTargetCurrency($formData['targetCurrency'])
+                ->setAmount($formData['amount'])
+                ->setAmountAfterExchange($amountAfterExchange)
+                ->setDate(new \DateTime());
+            $this->entityManager->persist($exchange);
+            $this->entityManager->flush();
 
-        $this->entityManager->persist($exchange);
-        $this->entityManager->flush();
-
-        //mailer
+            $this->userAccountService->changeAccountsBalances($formData, $amountAfterExchange);
+        } catch(Exception) {
+            throw new Exception('The exchange was unsuccessful');
+        }
     }
 
 }
