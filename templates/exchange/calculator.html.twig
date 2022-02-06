@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %} Currency Calculator{% endblock %}
+        {% block javascripts %}
+            {{ parent() }}
+            {{ encore_entry_script_tags('exchange') }}
+        {% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-18 m-auto">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        {{ form_start(exchange_form) }}
+
+                        {# <div class="col-md-6">
+                            {{ form_row(exchange_form.currency1,  {label_attr: {class: 'form-select'} }) }}
+                        </div>
+                        {{ form_row(exchange_form.submit,  {label_attr: {class: 'btn btn-primary'} }) }} #}
+                        {{ form_end(exchange_form) }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
