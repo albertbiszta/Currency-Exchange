@@ -7,22 +7,15 @@ class Exchange {
         this.amountField.addEventListener('change', () => {
             fetch('/public/get-conversion-result', {
                 method: 'POST',
-                body: JSON.stringify({
-                    'primaryCurrency': this.primaryCurrency.value,
-                    'targetCurrency': this.targetCurrency.value,
-                    amount: parseInt(this.amountField.value)
-                })
+                body: JSON.stringify({'primaryCurrency': this.primaryCurrency.value, 'targetCurrency': this.targetCurrency.value, amount: parseInt(this.amountField.value)})
             })
                 .then(result => result.json())
                 .then(result => console.log(result));
         });
-
     }
 
     showConversionResult() {
         console.log(this.primaryCurrency.value);
-
     }
 }
-
 const exchange = new Exchange();

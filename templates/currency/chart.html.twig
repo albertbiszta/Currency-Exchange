@@ -1,17 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %} Currency Calculator{% endblock %}
-        {% block javascripts %}
-            {{ parent() }}
-            {{ encore_entry_script_tags('exchange') }}
-        {% endblock %}
+{% block title %}Currency Exchange Chart!{% endblock %}
 {% block body %}
     <div class="container">
         <div class="row">
             <div class="col-lg-18 m-auto">
                 <div class="card mt-5">
                     <div class="card-body">
-                        {{ form_start(exchange_form) }}
-                        {{ form_end(exchange_form) }}
+                        {{ render_chart(chart, {'class': 'my-chart', 'style': 'height:40px; width: 200px'}) }}
                     </div>
                 </div>
             </div>

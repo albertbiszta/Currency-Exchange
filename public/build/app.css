@@ -1,6 +1,10 @@
-body {
-    /*background-color: lightgray;*/
+div.currency-chart {
+    width: 600px;
+}
+
+select#currency-chart-select {
+    margin-top: 0;
 }
 
 
-/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXBwLmNzcyIsIm1hcHBpbmdzIjoiQUFBQTtJQUNJLCtCQUErQjtBQUNuQyIsInNvdXJjZXMiOlsid2VicGFjazovLy8uL2Fzc2V0cy9zdHlsZXMvYXBwLmNzcyJdLCJzb3VyY2VzQ29udGVudCI6WyJib2R5IHtcbiAgICAvKmJhY2tncm91bmQtY29sb3I6IGxpZ2h0Z3JheTsqL1xufVxuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9*/
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXBwLmNzcyIsIm1hcHBpbmdzIjoiQUFBQTtJQUNJLFlBQVk7QUFDaEI7O0FBRUE7SUFDSSxhQUFhO0FBQ2pCIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vLy4vYXNzZXRzL3N0eWxlcy9hcHAuY3NzIl0sInNvdXJjZXNDb250ZW50IjpbImRpdi5jdXJyZW5jeS1jaGFydCB7XG4gICAgd2lkdGg6IDYwMHB4O1xufVxuXG5zZWxlY3QjY3VycmVuY3ktY2hhcnQtc2VsZWN0IHtcbiAgICBtYXJnaW4tdG9wOiAwO1xufVxuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9*/

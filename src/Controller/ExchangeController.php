@@ -58,4 +58,10 @@ class ExchangeController extends AbstractController
             'exchange_form' => $form->createView(),
         ]);
     }
+
+    #[Route('/test', name: 'test')]
+    public function test(): Response
+    {
+      // return new Response($this->userAccountService->test());
+    }
 }
