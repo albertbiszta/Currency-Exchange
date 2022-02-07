@@ -20,9 +20,9 @@ class CurrencyController extends AbstractController
         return $this->render('currency/chart.html.twig', ['chart' => $this->currencyService->getChart($currency, 7)]);
     }
 
-    #[Route('/currency/get-chart/{currency}')]
-    public function chartJson(string $currency): JsonResponse
+    #[Route('/currency/get-chart/currency/{currency}/number-of-days/{numberOfDays}')]
+    public function chartJson(string $currency, int $numberOfDays): JsonResponse
     {
-        return new JsonResponse($this->currencyService->getLastDaysRatesForCurrency($currency, 7));
+        return new JsonResponse($this->currencyService->getLastDaysRatesForCurrency($currency, $numberOfDays));
     }
 }

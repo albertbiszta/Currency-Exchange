@@ -1,7 +1,4 @@
-div.currency-chart {
-    width: 600px;
-}
+div.currency-chart {max-width: 900px;}
 
-select#currency-chart-select {
-    margin-top: 0;
-}
+select#currency-chart-select {height: 30px;}
+input#currency-chart-number-of-days{width: 60px;}

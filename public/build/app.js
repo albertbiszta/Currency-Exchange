@@ -351,7 +351,7 @@ __webpack_require__.r(__webpack_exports__);
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ __webpack_require__.O(0, ["vendors-node_modules_core-js_internals_a-constructor_js-node_modules_core-js_internals_array--7349ad","vendors-node_modules_chart_js_dist_chart_esm_js-node_modules_core-js_internals_array-iteratio-4a49fc","vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_chart_js_auto_auto_es-380a76"], () => (__webpack_exec__("./assets/app.js")));
+/******/ __webpack_require__.O(0, ["vendors-node_modules_core-js_internals_a-constructor_js-node_modules_core-js_internals_array--7779d0","vendors-node_modules_chart_js_dist_chart_esm_js-node_modules_core-js_internals_array-iteratio-d3da6d","vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_chart_js_auto_auto_es-322ea5"], () => (__webpack_exec__("./assets/app.js")));
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
