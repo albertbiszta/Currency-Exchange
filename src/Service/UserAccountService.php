@@ -31,22 +31,27 @@ class UserAccountService
             $primaryCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData['primaryCurrency'], $this->user);
             $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData['amount']);
             $this->entityManager->persist($primaryCurrencyUserAccount);
-
-            $targetCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData['targetCurrency'], $this->user);
-            if (!$targetCurrencyUserAccount) {
-                $targetCurrencyUserAccount = new UserAccount();
-                $targetCurrencyUserAccount
-                    ->setUser($this->user)
-                    ->setAmount($amountAfterExchange)
-                    ->setCurrency($formData['targetCurrency']);
-            } else {
-                $targetCurrencyUserAccount->setAmount($targetCurrencyUserAccount->getAmount() + $amountAfterExchange);
-            }
-            $this->entityManager->persist($targetCurrencyUserAccount);
             $this->entityManager->flush();
+            $this->addToAccount($formData['targetCurrency'], $amountAfterExchange);
         } catch(Exception) {
             throw new Exception('Account balance change failed');
         }
+    }
+
+    public function addToAccount(string $targetCurrency, float $amountAfterExchange): void
+    {
+        $targetCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($targetCurrency, $this->user);
+        if (!$targetCurrencyUserAccount) {
+            $targetCurrencyUserAccount = new UserAccount();
+            $targetCurrencyUserAccount
+                ->setUser($this->user)
+                ->setAmount($amountAfterExchange)
+                ->setCurrency($targetCurrency);
+        } else {
+            $targetCurrencyUserAccount->setAmount($targetCurrencyUserAccount->getAmount() + $amountAfterExchange);
+        }
+        $this->entityManager->persist($targetCurrencyUserAccount);
+        $this->entityManager->flush();
     }
 
     public function userAccountExists(string $currency): bool

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-18 m-auto">
+                <div class="card mt-5">
+                    <div class="card-body">
+                        {{ form(payment_form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
