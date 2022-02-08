@@ -4,26 +4,17 @@
             {{ encore_entry_script_tags('chart') }}
         {% endblock %}
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-18 m-auto">
-                <div class="card mt-5">
-                    <div class="card-body">
-                        <div class="currency-chart">
-                            <label for="currency-chart-select">Currency: </label>
-                            <select id="currency-chart-select">
-                                <option value="usd">U.S. Dollar</option>
-                                <option value="eur">Euro</option>
-                                <option value="chf">Swiss Franc</option>
-                                <option value="gbp">Pound Sterling</option>
-                            </select>
-                            <label for="currency-chart-number-of-days">Number of days: </label>
-                            <input id="currency-chart-number-of-days" type="number" value="7">
-                            <canvas id="currencyChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="currency-chart">
+        <label for="currency-chart-select">Currency: </label>
+        <select id="currency-chart-select">
+            <option value="usd">U.S. Dollar</option>
+            <option value="eur">Euro</option>
+            <option value="chf">Swiss Franc</option>
+            <option value="gbp">Pound Sterling</option>
+        </select>
+        <label for="currency-chart-number-of-days">Number of days: </label>
+        <input id="currency-chart-number-of-days" type="number" value="7">
+        <canvas id="currencyChart"></canvas>
     </div>
+
 {% endblock %}
