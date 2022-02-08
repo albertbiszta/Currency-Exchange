@@ -9,13 +9,11 @@ use Stripe\Stripe;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 
-class PaymentService
+class PaymentService extends Service
 {
-    private $user;
-
-    public function __construct(private EntityManagerInterface $entityManager, private UrlGeneratorInterface $router, Security $security)
+    public function __construct(private UrlGeneratorInterface $router, Security $security, protected EntityManagerInterface $entityManager)
     {
-        $this->user = $security->getUser();
+        parent::__construct($security, $this->entityManager);
     }
 
     public function paymentHandle(Payment $payment): Session

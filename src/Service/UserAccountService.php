@@ -5,16 +5,13 @@ namespace App\Service;
 use App\Entity\UserAccount;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Component\Security\Core\Security;
 
-class UserAccountService
+class UserAccountService extends Service
 {
-    private $user;
-
-    public function __construct(private UserAccountRepository $userAccountRepository, Security $security, private EntityManagerInterface $entityManager)
+    public function __construct(private UserAccountRepository $userAccountRepository, Security $security, protected EntityManagerInterface $entityManager)
     {
-        $this->user = $security->getUser();
+        parent::__construct($security, $this->entityManager);
     }
 
     public function isAccountBalanceSufficient(string $primaryCurrency, float $exchangeAmount): bool
@@ -22,20 +19,13 @@ class UserAccountService
         return $this->userAccountRepository->getUserAccountByCurrency($primaryCurrency, $this->user)->getAmount() >= $exchangeAmount;
     }
 
-    /**
-     * @throws Exception
-     */
     public function changeAccountsBalances(array $formData, float $amountAfterExchange): void
     {
-        try {
-            $primaryCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData['primaryCurrency'], $this->user);
-            $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData['amount']);
-            $this->entityManager->persist($primaryCurrencyUserAccount);
-            $this->entityManager->flush();
-            $this->addToAccount($formData['targetCurrency'], $amountAfterExchange);
-        } catch(Exception) {
-            throw new Exception('Account balance change failed');
-        }
+        $primaryCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData['primaryCurrency'], $this->user);
+        $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData['amount']);
+        $this->entityManager->persist($primaryCurrencyUserAccount);
+        $this->entityManager->flush();
+        $this->addToAccount($formData['targetCurrency'], $amountAfterExchange);
     }
 
     public function addToAccount(string $targetCurrency, float $amountAfterExchange): void

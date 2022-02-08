@@ -6,7 +6,6 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\UX\Chartjs\Builder\ChartBuilder;
 use Symfony\UX\Chartjs\Model\Chart;
 
-
 class CurrencyService
 {
     private const url = 'http://api.nbp.pl/api/exchangerates/rates/a/';
@@ -38,12 +37,10 @@ class CurrencyService
     {
         $days = [];
         $rates = [];
-
         foreach($this->getLastDaysRatesForCurrency($currency, $numberOfDays) as $rate) {
             array_push($days, $rate['date']);
             array_push($rates, $rate['rate']);
         }
-
         $chart = (new ChartBuilder())->createChart(Chart::TYPE_LINE);
         $chart->setData([
             'labels' => $days,

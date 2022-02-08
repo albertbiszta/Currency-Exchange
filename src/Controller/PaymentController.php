@@ -38,6 +38,12 @@ class PaymentController extends AbstractController
         $this->paymentService->setPaymentAsCompleted($payment);
         $this->userAccountService->addToAccount($payment->getCurrency(), $payment->getAmount());
 
+        return $this->redirectToRoute('payment_success_url');
+    }
+
+    #[Route('/payment/success-url', name: 'payment_success_url')]
+    public function successUrl(): Response
+    {
         return $this->render('payment/success.html.twig', []);
     }
 
