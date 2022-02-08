@@ -1,19 +1,19 @@
 import {Chart as ChartJs} from "chart.js";
-
-class Chart{
+class Chart {
     currentChart = '';
     currency = 'usd';
     numberOfDays = 7;
+
     constructor() {
-       this.getChart(this.currency, this.numberOfDays);
-       document.querySelector('select#currency-chart-select').addEventListener('change', (e) => {
-           this.currency = e.target.value;
-           this.getChart();
-       })
-       const numberOfDaysInput =  document.querySelector('input#currency-chart-number-of-days');
+        this.getChart(this.currency, this.numberOfDays);
+        document.querySelector('select#currency-chart-select').addEventListener('change', (e) => {
+            this.currency = e.target.value;
+            this.getChart();
+        })
+        const numberOfDaysInput = document.querySelector('input#currency-chart-number-of-days');
         numberOfDaysInput.addEventListener('change', (e) => {
-            if (parseInt(e.target.value) > 90) {
-                alert('The maximum number of days is 90');
+            if (parseInt(e.target.value) > 90 || parseInt(e.target.value) < 0) {
+                alert('The range of days is from 1 to 90.');
             } else {
                 this.numberOfDays = parseInt(e.target.value);
                 this.getChart();
@@ -23,7 +23,7 @@ class Chart{
     }
 
     getChart() {
-         fetch(`/public/currency/get-chart/currency/${this.currency}/number-of-days/${this.numberOfDays}`)
+        fetch(`/public/currency/get-chart/currency/${this.currency}/number-of-days/${this.numberOfDays}`)
             .then(result => result.json())
             .then(result => {
                 const labels = [];
