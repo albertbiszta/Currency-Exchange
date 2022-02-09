@@ -8,7 +8,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class CurrencyService
 {
-    private const url = 'http://api.nbp.pl/api/exchangerates/rates/a/';
+    private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 
     public function getLastDaysRatesForCurrency(string $currency, int $numberOfDays): array
     {
@@ -68,7 +68,6 @@ class CurrencyService
 
     private function getApiResponse(string $currency, string $extraPath = ''): array
     {
-        return HttpClient::create()->request('GET', self::url . $currency . $extraPath)->toArray();
+        return HttpClient::create()->request('GET', self::URL . $currency . $extraPath)->toArray();
     }
-
 }
