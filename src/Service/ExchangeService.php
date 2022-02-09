@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Exchange;
+use App\Form\ExchangeFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Security;
 
 class ExchangeService extends Service
@@ -37,5 +39,14 @@ class ExchangeService extends Service
         $this->entityManager->persist($exchange);
         $this->entityManager->flush();
         $this->userAccountService->changeAccountsBalances($formData, $amountAfterExchange);
+    }
+
+    public function getDataFromForm(FormInterface $form): array
+    {
+        $formData = [];
+        foreach (['primaryCurrency', 'targetCurrency', 'amount'] as $field) {
+            $formData[$field] = $form[$field]->getData();
+        }
+        return $formData;
     }
 }

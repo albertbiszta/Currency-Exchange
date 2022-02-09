@@ -41,10 +41,7 @@ class ExchangeController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = [];
-            foreach (['primaryCurrency', 'targetCurrency', 'amount'] as $field) {
-                $formData[$field] = $form[$field]->getData();
-            }
+            $formData = $this->exchangeService->getDataFromForm($form);
             if ($this->userAccountService->userAccountExists($formData['primaryCurrency']) && $this->userAccountService->isAccountBalanceSufficient($formData['primaryCurrency'], $formData['amount'])) {
                 $this->exchangeService->createExchange($formData);
                 $this->addFlash('success', 'Currency exchange completed successfully');
@@ -53,7 +50,6 @@ class ExchangeController extends AbstractController
             }
             return $this->redirectToRoute('exchange');
         }
-
         return $this->render('exchange/index.html.twig', [
             'exchange_form' => $form->createView(),
         ]);
