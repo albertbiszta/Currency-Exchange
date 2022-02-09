@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %} Payments {% endblock %}
+{% block body %}
+    <table class="table table-hover table-sm ">
+        <thead>
+        <th scope="col">Currency</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Date</th>
+        <th scope="col">Completed</th>
+        </thead>
+        <tbody>
+        {% for payment in payments %}
+            <tr>
+                <td>   {{ payment.currency|upper }}</td>
+                <td>   {{ payment.amount }}</td>
+                <td>   {{ payment.date|date("d-m-Y") }}</td>
+                <td>
+                    {% if payment.iscompleted == 0 %}
+                        <p>No</p>
+                    {% else %}
+                        <p> Yes</p>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

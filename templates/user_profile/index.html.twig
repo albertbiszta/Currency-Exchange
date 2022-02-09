@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %} User Profile {% endblock %}
+{% block body %}
+    <div class="list-group">
+        <a href="{{ path('user_payments') }}" class="list-group-item list-group-item-action">My payments</a>
+        <a href="{{ path('user_exchanges') }}" class="list-group-item list-group-item-action">My exchanges</a>
+    </div>
+    <table class="table table-hover table-sm ">
+        <thead>
+        <th scope="col"><h5>Status of my accounts:</h5></th>
+        <th scope="col"></th>
+        </thead>
+        <tbody>
+        {% for account in accounts %}
+            <tr>
+                <td>   {{ account.currency|upper }}</td>
+                <td>   {{ account.amount }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
