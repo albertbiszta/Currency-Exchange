@@ -1,4 +1,5 @@
-import {Chart as ChartJs} from "chart.js";
+;import { Chart as ChartJs } from 'chart.js';
+
 class Chart {
     currentChart = '';
     currency = 'usd';
@@ -23,6 +24,7 @@ class Chart {
     }
 
     getChart() {
+        // ToDo POST method
         fetch(`/public/currency/get-chart/currency/${this.currency}/number-of-days/${this.numberOfDays}`)
             .then(result => result.json())
             .then(result => {
@@ -38,8 +40,8 @@ class Chart {
 
     createChart(labels, rates) {
         this.currentChart && this.currentChart.destroy();
-        this.currentChart = new ChartJs("currencyChart", {
-            type: "line",
+        this.currentChart = new ChartJs('currencyChart', {
+            type: 'line',
             data: {
                 labels: labels,
                 datasets: [{

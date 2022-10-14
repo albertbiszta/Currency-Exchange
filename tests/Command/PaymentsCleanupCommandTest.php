@@ -11,16 +11,13 @@ class PaymentsCleanupCommandTest extends PaymentTest
     /** @test */
     public function the_command_deletes_incomplete_payments()
     {
-        $testUser = $this->getNewUser();
-        $this->createPayment($testUser, 0);
-        $this->createPayment($testUser, 0);
-        $this->createPayment($testUser, 0);
-        $this->createPayment($testUser, 1);
-
+        foreach ([0, 0, 1] as $isCompletedValue) {
+            $this->createPayment($this->getNewUser(), $isCompletedValue);
+        }
         $paymentRepository = $this->getPaymentRepository();
         $incompletePayments = $paymentRepository->findBy(['is_completed' => 0]);
-        $this->assertCount(3, $incompletePayments);
-        $this->assertCount(4, $paymentRepository->findAll());
+        $this->assertCount(2, $incompletePayments);
+        $this->assertCount(3, $paymentRepository->findAll());
 
         $command = (new Application(self::$kernel))->find('app:delete-incomplete-payments');
         $commandTester = new CommandTester($command);

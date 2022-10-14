@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Payment;
+use App\Service\CurrencyService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -16,14 +17,7 @@ class PaymentFormType extends AbstractType
     {
         $builder
             ->add('currency', ChoiceType::class, [
-                'choices' => [
-                    'Polish Zloty' => 'pln',
-                    'U.S. Dollar' => 'usd',
-                    'Euro' => 'eur',
-                    'Swiss Franc' => 'chf',
-                    'Pound Sterling' => 'gbp',
-
-                ],
+                'choices' => CurrencyService::CURRENCY_CHOICES,
             ])
             ->add('amount', NumberType::class)
             ->add('submit', SubmitType::class);

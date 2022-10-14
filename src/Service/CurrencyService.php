@@ -8,38 +8,55 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class CurrencyService
 {
+    public const EURO_SHORTNAME = 'eur';
+    public const POLISH_ZLOTY_SHORTNAME = 'pln';
+    public const POUND_STERLING_SHORTNAME = 'gbp';
+    public const SWISS_FRANC_SHORTNAME = 'chf';
+    public const US_DOLLAR_SHORTNAME = 'usd';
+
+    public const CURRENCY_CHOICES = [
+        'Euro' => self::EURO_SHORTNAME,
+        'Polish Zloty' => self::POLISH_ZLOTY_SHORTNAME,
+        'Pound Sterling' => self::POUND_STERLING_SHORTNAME,
+        'Swiss Franc' => self::SWISS_FRANC_SHORTNAME,
+        'U.S. Dollar' => self::US_DOLLAR_SHORTNAME,
+    ];
+
     private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 
-    public function getLastDaysRatesForCurrency(string $currency, int $numberOfDays): array
+    public static function getLastDaysRatesForCurrency(string $currency, int $numberOfDays): array
     {
-        return array_map(fn($dayData) => ['date' => $dayData['effectiveDate'], 'rate' => $dayData['mid']], $this->getApiResponse($currency, "/last/$numberOfDays")['rates']);
+        return array_map(fn($dayData) => [
+            'date' => $dayData['effectiveDate'],
+            'rate' => $dayData['mid'],
+        ], self::getApiResponse($currency, "/last/$numberOfDays")['rates']);
     }
 
-    public function getPercentageChangeForCurrency(string $currency): float
+    public static function getPercentageChangeForCurrency(string $currency): float
     {
-        $rates = $this->getLastDaysRatesForCurrency($currency, 2);
+        $rates = self::getLastDaysRatesForCurrency($currency, 2);
         $change = ($rates[1]['mid'] - $rates[0]['mid']) / $rates[0]['mid'];
 
         return round($change * 100, 2);
     }
 
-    public function getCurrentRate(string $currency): float
+    public static function getCurrentRate(string $currency): float
     {
-        return $this->getApiResponse($currency)['rates'][0]['mid'];
+        return ($currency === self::POLISH_ZLOTY_SHORTNAME) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
-    public function getDataForRatesChangeChart(string $currency, int $numberOfDays): array
+    public static function getDataForRatesChangeChart(string $currency, int $numberOfDays): array
     {
-        return array_map(fn($dayData) => ['date' => $dayData['effectiveDate'], 'rate' => $dayData['mid']], $this->getLastDaysRatesForCurrency($currency, $numberOfDays));
+        return array_map(fn($dayData) => ['date' => $dayData['effectiveDate'], 'rate' => $dayData['mid']], self::getLastDaysRatesForCurrency($currency, $numberOfDays));
     }
 
-    public function getChart(string $currency, int $numberOfDays): Chart
+    public static function getChart(string $currency, int $numberOfDays): Chart
     {
         $days = [];
         $rates = [];
-        foreach($this->getLastDaysRatesForCurrency($currency, $numberOfDays) as $rate) {
-            array_push($days, $rate['date']);
-            array_push($rates, $rate['rate']);
+        foreach(self::getLastDaysRatesForCurrency($currency, $numberOfDays) as $rate) {
+            $days[] =  $rate['date'];
+            $rates[] =  $rate['rate'];
         }
         $chart = (new ChartBuilder())->createChart(Chart::TYPE_LINE);
         $chart->setData([
@@ -66,7 +83,7 @@ class CurrencyService
         return $chart;
     }
 
-    private function getApiResponse(string $currency, string $extraPath = ''): array
+    private static function getApiResponse(string $currency, string $extraPath = ''): array
     {
         return HttpClient::create()->request('GET', self::URL . $currency . $extraPath)->toArray();
     }

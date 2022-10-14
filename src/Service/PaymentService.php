@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Security;
 
 class PaymentService extends Service
 {
-    public function __construct(private UrlGeneratorInterface $router, Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(private UrlGeneratorInterface $router, protected Security $security, protected EntityManagerInterface $entityManager)
     {
         parent::__construct($security, $this->entityManager);
     }

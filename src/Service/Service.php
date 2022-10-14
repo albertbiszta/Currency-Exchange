@@ -4,12 +4,13 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class Service
 {
-    protected ?\Symfony\Component\Security\Core\User\UserInterface $user;
+    protected ?UserInterface $user;
 
-    public function __construct(Security $security,  protected EntityManagerInterface $entityManager)
+    public function __construct(protected Security $security,  protected EntityManagerInterface $entityManager)
     {
         $this->user = $security->getUser();
     }

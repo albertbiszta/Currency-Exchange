@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Exchange;
+use App\Service\CurrencyService;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -14,29 +15,15 @@ class ExchangeFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('primaryCurrency', ChoiceType::class, [
-            'choices' => [
-                'Polish Zloty' => 'pln',
-                'U.S. Dollar' => 'usd',
-                'Euro' => 'eur',
-                'Swiss Franc' => 'chf',
-                'Pound Sterling' => 'gbp',
-
-            ],
-        ])
-            ->add('targetCurrency', ChoiceType::class, [
-                'choices' => [
-                    'U.S. Dollar' => 'usd',
-                    'Polish Zloty' => 'pln',
-                    'Euro' => 'eur',
-                    'Swiss Franc' => 'chf',
-                    'Pound Sterling' => 'gbp',
-
-                ],
+        $builder
+            ->add(Exchange::PRIMARY_CURRENCY, ChoiceType::class, [
+                'choices' => CurrencyService::CURRENCY_CHOICES,
             ])
-            ->add('amount', NumberType::class)
+            ->add(Exchange::TARGET_CURRENCY, ChoiceType::class, [
+                'choices' => CurrencyService::CURRENCY_CHOICES,
+            ])
+            ->add(Exchange::AMOUNT, NumberType::class)
             ->add('submit', SubmitType::class);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

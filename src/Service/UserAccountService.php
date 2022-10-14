@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Exchange;
 use App\Entity\UserAccount;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,31 +10,31 @@ use Symfony\Component\Security\Core\Security;
 
 class UserAccountService extends Service
 {
-    public function __construct(private UserAccountRepository $userAccountRepository, Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(private UserAccountRepository $userAccountRepository, protected Security $security, protected EntityManagerInterface $entityManager)
     {
         parent::__construct($security, $this->entityManager);
     }
 
     public function isAccountBalanceSufficient(string $primaryCurrency, float $exchangeAmount): bool
     {
-        return $this->userAccountRepository->getUserAccountByCurrency($primaryCurrency, $this->user)->getAmount() >= $exchangeAmount;
+        $currencyAccount = $this->userAccountRepository->getUserAccountByCurrency($primaryCurrency, $this->user);
+        return $currencyAccount && ($currencyAccount->getAmount() >= $exchangeAmount);
     }
 
     public function changeAccountsBalances(array $formData, float $amountAfterExchange): void
     {
-        $primaryCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData['primaryCurrency'], $this->user);
-        $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData['amount']);
+        $primaryCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData[Exchange::PRIMARY_CURRENCY], $this->user);
+        $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData[Exchange::AMOUNT]);
         $this->entityManager->persist($primaryCurrencyUserAccount);
         $this->entityManager->flush();
-        $this->addToAccount($formData['targetCurrency'], $amountAfterExchange);
+        $this->addToAccount($formData[Exchange::TARGET_CURRENCY], $amountAfterExchange);
     }
 
     public function addToAccount(string $targetCurrency, float $amountAfterExchange): void
     {
         $targetCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($targetCurrency, $this->user);
         if (!$targetCurrencyUserAccount) {
-            $targetCurrencyUserAccount = new UserAccount();
-            $targetCurrencyUserAccount
+            (new UserAccount())
                 ->setUser($this->user)
                 ->setAmount($amountAfterExchange)
                 ->setCurrency($targetCurrency);
@@ -42,10 +43,5 @@ class UserAccountService extends Service
         }
         $this->entityManager->persist($targetCurrencyUserAccount);
         $this->entityManager->flush();
-    }
-
-    public function userAccountExists(string $currency): bool
-    {
-        return $this->userAccountRepository->count(['User' => $this->user, 'currency' => $currency]);
     }
 }
