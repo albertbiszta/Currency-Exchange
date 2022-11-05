@@ -67,7 +67,6 @@ class DatabaseDependantTestCase extends WebTestCase
             ->setCurrency($currency)
             ->setIsCompleted($isCompleted)
             ->setDate(new \DateTime);
-
         $this->saveEntity($payment);
 
         return $payment;

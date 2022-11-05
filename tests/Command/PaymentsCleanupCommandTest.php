@@ -17,7 +17,7 @@ class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
             $this->createPayment($this->createUser(), 1000, Currency::EURO_SHORTNAME, $isCompletedValue);
         }
         $paymentRepository = $this->getRepository(Payment::class);
-        $incompletePayments = $paymentRepository->findBy(['is_completed' => 0]);
+        $incompletePayments = $paymentRepository->findBy(['is_completed' => false]);
         $this->assertCount(2, $incompletePayments);
         $this->assertCount(3, $paymentRepository->findAll());
 
@@ -25,7 +25,7 @@ class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
-        $this->assertCount(0, $paymentRepository->findBy(['is_completed' => 0]));
+        $this->assertCount(0, $paymentRepository->findBy(['is_completed' => false]));
         $this->assertCount(1, $paymentRepository->findAll());
     }
 }
