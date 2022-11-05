@@ -19,7 +19,7 @@ class PaymentService extends Service
     public function paymentHandle(Payment $payment): Session
     {
         $payment->setMissingAttributes($this->getUser());
-        $this->save($payment);
+        $this->saveEntity($payment);
         Stripe::setApiKey($_ENV['APP_STRIPE_SK']);
 
         return Session::create([
@@ -43,12 +43,6 @@ class PaymentService extends Service
     public function setPaymentAsCompleted(Payment $payment): void
     {
         $payment->setIsCompleted(1);
-        $this->save($payment);
-    }
-
-    private function save(Payment $payment): void
-    {
-        $this->entityManager->persist($payment);
-        $this->entityManager->flush();
+        $this->saveEntity($payment);
     }
 }
