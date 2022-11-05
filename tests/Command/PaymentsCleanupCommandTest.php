@@ -2,8 +2,8 @@
 
 namespace App\Tests\Command;
 
+use App\Entity\Currency;
 use App\Entity\Payment;
-use App\Service\CurrencyService;
 use App\Tests\DatabaseDependantTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -14,7 +14,7 @@ class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
     public function the_command_deletes_incomplete_payments()
     {
         foreach ([false, false, true] as $isCompletedValue) {
-            $this->createPayment($this->createUser(), 1000, CurrencyService::EURO_SHORTNAME, $isCompletedValue);
+            $this->createPayment($this->createUser(), 1000, Currency::EURO_SHORTNAME, $isCompletedValue);
         }
         $paymentRepository = $this->getRepository(Payment::class);
         $incompletePayments = $paymentRepository->findBy(['is_completed' => 0]);

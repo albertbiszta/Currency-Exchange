@@ -8,10 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ExchangeRepository::class)]
 class Exchange
 {
-    public const PRIMARY_CURRENCY = 'primaryCurrency';
-    public const TARGET_CURRENCY = 'targetCurrency';
-    public const AMOUNT = 'amount';
-    public const AMOUNT_AFTER_EXCHANGE = 'amountAfterExchange';
+    public const ATTRIBUTE_PRIMARY_CURRENCY = 'primaryCurrency';
+    public const ATTRIBUTE_TARGET_CURRENCY = 'targetCurrency';
+    public const ATTRIBUTE_AMOUNT = 'amount';
+    public const ATTRIBUTE_AMOUNT_AFTER_EXCHANGE = 'amountAfterExchange';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

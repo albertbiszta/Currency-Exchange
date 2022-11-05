@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Currency;
 use App\Entity\Exchange;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\UX\Chartjs\Builder\ChartBuilder;
@@ -9,20 +10,6 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class CurrencyService
 {
-    public const EURO_SHORTNAME = 'eur';
-    public const POLISH_ZLOTY_SHORTNAME = 'pln';
-    public const POUND_STERLING_SHORTNAME = 'gbp';
-    public const SWISS_FRANC_SHORTNAME = 'chf';
-    public const US_DOLLAR_SHORTNAME = 'usd';
-
-    public const CURRENCY_CHOICES = [
-        'Euro' => self::EURO_SHORTNAME,
-        'Polish Zloty' => self::POLISH_ZLOTY_SHORTNAME,
-        'Pound Sterling' => self::POUND_STERLING_SHORTNAME,
-        'Swiss Franc' => self::SWISS_FRANC_SHORTNAME,
-        'U.S. Dollar' => self::US_DOLLAR_SHORTNAME,
-    ];
-
     private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 
     public static function getLastDaysRatesForCurrency(string $currency, int $numberOfDays): array
@@ -43,7 +30,7 @@ class CurrencyService
 
     public static function getCurrentRate(string $currency): float
     {
-        return ($currency === self::POLISH_ZLOTY_SHORTNAME) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
+        return ($currency === Currency::POLISH_ZLOTY_SHORTNAME) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
     public static function getConversion(Exchange $exchange): float

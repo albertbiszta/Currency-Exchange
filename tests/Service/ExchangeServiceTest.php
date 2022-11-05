@@ -2,13 +2,12 @@
 
 namespace App\Tests\Service;
 
+use App\Entity\Currency;
 use App\Entity\Exchange;
 use App\Exception\ExchangeException;
 use App\Repository\UserAccountRepository;
-use App\Service\CurrencyService;
 use App\Service\ExchangeService;
 use App\Tests\DatabaseDependantTestCase;
-use JetBrains\PhpStorm\ArrayShape;
 
 class ExchangeServiceTest extends DatabaseDependantTestCase
 {
@@ -27,10 +26,10 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         $this->expectException(ExchangeException::class);
         $user = $this->getLoggedUser();
-        $this->createUserAccount($user, 50, CurrencyService::POLISH_ZLOTY_SHORTNAME);
+        $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY_SHORTNAME);
         $exchange = new Exchange();
-        $exchange->setPrimaryCurrency(CurrencyService::POLISH_ZLOTY_SHORTNAME)
-            ->setTargetCurrency(CurrencyService::EURO_SHORTNAME)
+        $exchange->setPrimaryCurrency($userAccount->getCurrency())
+            ->setTargetCurrency(Currency::EURO_SHORTNAME)
             ->setAmount(100);
 
         $this->exchangeService->createExchange($exchange);
@@ -41,11 +40,11 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         $user = $this->getLoggedUser();
         $this->assertEquals(0, $this->getNumberOfUserAccounts());
-        $userAccount = $this->createUserAccount($user, 1000, CurrencyService::POLISH_ZLOTY_SHORTNAME);
+        $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY_SHORTNAME);
         $this->assertEquals(1, $this->getNumberOfUserAccounts());
         $exchange = new Exchange();
-        $exchange->setPrimaryCurrency(CurrencyService::POLISH_ZLOTY_SHORTNAME)
-            ->setTargetCurrency(CurrencyService::EURO_SHORTNAME)
+        $exchange->setPrimaryCurrency($userAccount->getCurrency())
+            ->setTargetCurrency(Currency::EURO_SHORTNAME)
             ->setAmount(100);
 
         $this->exchangeService->createExchange($exchange);
