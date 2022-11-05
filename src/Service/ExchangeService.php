@@ -27,7 +27,7 @@ class ExchangeService extends Service
         $amountAfterExchange = CurrencyService::getConversion($exchange);
         $exchange->setMissingAttributes($this->getUser(), $amountAfterExchange);
         $this->saveEntity($exchange);
-        $this->userAccountService->changeAccountsBalances($exchange);
+        $this->userAccountService->updateAccountsBalances($exchange);
 
         return $exchange;
     }

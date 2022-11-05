@@ -21,7 +21,7 @@ class UserAccountService extends Service
         return $currencyAccount && ($currencyAccount->getAmount() >= $exchangeAmount);
     }
 
-    public function changeAccountsBalances(Exchange $exchange): void
+    public function updateAccountsBalances(Exchange $exchange): void
     {
         $primaryCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $exchange->getPrimaryCurrency());
         $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $exchange->getAmount());
