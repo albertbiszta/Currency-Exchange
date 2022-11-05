@@ -6,45 +6,84 @@ use App\Entity\Exchange;
 use App\Entity\Payment;
 use App\Entity\User;
 use App\Entity\UserAccount;
-use App\Service\UserAccountService;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DatabaseDependantTestCase extends KernelTestCase
+class DatabaseDependantTestCase extends WebTestCase
 {
-    /** @var EntityManagerInterface */
-    protected $entityManager;
+    protected KernelBrowser $client;
+    protected ?EntityManagerInterface $entityManager;
 
     protected function setUp(): void
     {
-        $kernel = self::bootKernel();
-        DatabasePrimer::prime($kernel);
-        $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
-
+        $this->client = static::createClient();
+        DatabasePrimer::prime($this->client->getKernel());
+        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
     }
 
     protected function tearDown(): void
     {
-        foreach ($this->entityManager->getRepository(Payment::class)->findAll() as $entity) $this->entityManager->remove($entity);
-        foreach ($this->entityManager->getRepository(User::class)->findAll() as $entity) $this->entityManager->remove($entity);
-        foreach ($this->entityManager->getRepository(UserAccount::class)->findAll() as $entity) $this->entityManager->remove($entity);
-        foreach ($this->entityManager->getRepository(Exchange::class)->findAll() as $entity) $this->entityManager->remove($entity);
+        foreach ([Exchange::class, Payment::class, User::class, UserAccount::class] as $className) {
+            foreach ($this->entityManager->getRepository($className)->findAll() as $entity) {
+                $this->entityManager->remove($entity);
+            }
+        }
         $this->entityManager->flush();
         parent::tearDown();
         $this->entityManager->close();
         $this->entityManager = null;
     }
 
-    protected function getNewUser(): User
+    protected function getRepository(string $entityName): EntityRepository
+    {
+        return $this->entityManager->getRepository($entityName);
+    }
+
+    protected function createUser(): User
     {
         $user = new User();
         $user->setEmail(rand(1, 99999) . 'email@test.example');
         $user->setPassword('$argon2id$v=19$m=65536,t=6,p=1$AIC3IESQ64NgHfpVQZqviw$1c7M56xyiaQFBjlUBc7T0s53/PzZCjV56lbHnhOUXx8');
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->saveEntity($user);
 
         return $user;
     }
 
+    protected function createUserAccount(User $user, float $amount, string $currency): UserAccount
+    {
+        $userAccount = new UserAccount($user, $amount, $currency);
+        $this->saveEntity($userAccount);
+
+        return $userAccount;
+    }
+
+    protected function createPayment(User $user, float $amount, string $currency, bool $isCompleted = false): Payment
+    {
+        $payment = new Payment();
+        $payment->setUser($user)
+            ->setAmount($amount)
+            ->setCurrency($currency)
+            ->setIsCompleted($isCompleted)
+            ->setDate(new \DateTime);
+
+        $this->saveEntity($payment);
+
+        return $payment;
+    }
+
+    protected function getLoggedUser(): User
+    {
+        $user = $this->createUser();
+        $this->client->loginUser($user);
+
+        return $user;
+    }
+
+    private function saveEntity($entity)
+    {
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+    }
 }
