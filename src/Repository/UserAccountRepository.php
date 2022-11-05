@@ -21,7 +21,7 @@ class UserAccountRepository extends ServiceEntityRepository
         parent::__construct($registry, UserAccount::class);
     }
 
-    public function getUserAccountByCurrency(string $currency, UserInterface|User $user): ?UserAccount
+    public function findOneByUserAndCurrency(UserInterface $user, string $currency): ?UserAccount
     {
         return $this->findOneBy(['User' => $user, 'currency' => $currency]);
     }

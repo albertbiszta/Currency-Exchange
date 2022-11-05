@@ -22,10 +22,13 @@ class PaymentsCleanupCommand extends Command
         $this->setDescription('Delete incomplete payments');
     }
 
+    /**
+     * run after midnight
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $numberOfDeletedPayments = 0;
-        foreach ($this->paymentRepository->findBy(['is_completed' => 0]) as $payment) {
+        foreach ($this->paymentRepository->findIncomplete() as $payment) {
             $this->entityManager->remove($payment);
             $numberOfDeletedPayments++;
         }

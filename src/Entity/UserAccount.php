@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserAccountRepository::class)]
 class UserAccount
@@ -22,6 +23,14 @@ class UserAccount
 
     #[ORM\Column(type: 'float')]
     private float $amount;
+
+    public function __construct(User $user, float $amount, string $currency)
+    {
+        $this
+            ->setUser($user)
+            ->setAmount($amount)
+            ->setCurrency($currency);
+    }
 
     public function getId(): ?int
     {

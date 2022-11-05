@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Exchange;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\UX\Chartjs\Builder\ChartBuilder;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -45,9 +46,22 @@ class CurrencyService
         return ($currency === self::POLISH_ZLOTY_SHORTNAME) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
+    public static function getConversion(array $formData): float
+    {
+        $primaryCurrency = $formData[Exchange::PRIMARY_CURRENCY];
+        $targetCurrency = $formData[Exchange::TARGET_CURRENCY];
+        $primaryCurrencyRate = self::getCurrentRate($primaryCurrency);
+        $targetCurrencyRate = self::getCurrentRate($targetCurrency);
+
+        return round(($formData[Exchange::AMOUNT] * $primaryCurrencyRate) / $targetCurrencyRate, 2);
+    }
+
     public static function getDataForRatesChangeChart(string $currency, int $numberOfDays): array
     {
-        return array_map(fn($dayData) => ['date' => $dayData['effectiveDate'], 'rate' => $dayData['mid']], self::getLastDaysRatesForCurrency($currency, $numberOfDays));
+        return array_map(fn($dayData) => [
+            'date' => $dayData['effectiveDate'],
+            'rate' => $dayData['mid'],
+        ], self::getLastDaysRatesForCurrency($currency, $numberOfDays));
     }
 
     public static function getChart(string $currency, int $numberOfDays): Chart
@@ -55,8 +69,8 @@ class CurrencyService
         $days = [];
         $rates = [];
         foreach(self::getLastDaysRatesForCurrency($currency, $numberOfDays) as $rate) {
-            $days[] =  $rate['date'];
-            $rates[] =  $rate['rate'];
+            $days[] = $rate['date'];
+            $rates[] = round($rate['rate'], 3);
         }
         $chart = (new ChartBuilder())->createChart(Chart::TYPE_LINE);
         $chart->setData([

@@ -17,13 +17,13 @@ class UserAccountService extends Service
 
     public function isAccountBalanceSufficient(string $primaryCurrency, float $exchangeAmount): bool
     {
-        $currencyAccount = $this->userAccountRepository->getUserAccountByCurrency($primaryCurrency, $this->user);
+        $currencyAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $primaryCurrency);
         return $currencyAccount && ($currencyAccount->getAmount() >= $exchangeAmount);
     }
 
     public function changeAccountsBalances(array $formData, float $amountAfterExchange): void
     {
-        $primaryCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($formData[Exchange::PRIMARY_CURRENCY], $this->user);
+        $primaryCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $formData[Exchange::PRIMARY_CURRENCY]);
         $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData[Exchange::AMOUNT]);
         $this->entityManager->persist($primaryCurrencyUserAccount);
         $this->entityManager->flush();
@@ -32,16 +32,28 @@ class UserAccountService extends Service
 
     public function addToAccount(string $targetCurrency, float $amountAfterExchange): void
     {
-        $targetCurrencyUserAccount = $this->userAccountRepository->getUserAccountByCurrency($targetCurrency, $this->user);
-        if (!$targetCurrencyUserAccount) {
-            (new UserAccount())
-                ->setUser($this->user)
-                ->setAmount($amountAfterExchange)
-                ->setCurrency($targetCurrency);
+        $targetCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $targetCurrency);
+        if ($targetCurrencyUserAccount) {
+            $this->updateAmount($targetCurrencyUserAccount, $amountAfterExchange);
         } else {
-            $targetCurrencyUserAccount->setAmount($targetCurrencyUserAccount->getAmount() + $amountAfterExchange);
+            $this->create($targetCurrency, $amountAfterExchange);
         }
-        $this->entityManager->persist($targetCurrencyUserAccount);
+    }
+
+    private function create(string $currency, float $amount): void
+    {
+        $this->save(new UserAccount($this->getUser(), $amount, $currency));
+    }
+
+    private function updateAmount(UserAccount $userAccount, float $amountAfterExchange): void
+    {
+        $userAccount->setAmount($userAccount->getAmount() + $amountAfterExchange);
+        $this->save($userAccount);
+    }
+
+    private function save(UserAccount $userAccount): void
+    {
+        $this->entityManager->persist($userAccount);
         $this->entityManager->flush();
     }
 }

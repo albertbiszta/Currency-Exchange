@@ -1,8 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %} Exchange {% endblock %}
+ {% block javascripts %}
+     {{ parent() }}
+     {{ encore_entry_script_tags('exchange') }}
+ {% endblock %}
 {% block body %}
-
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
@@ -14,7 +17,7 @@
             {{ message }}
         </div>
     {% endfor %}
+    <div class="alert alert-primary" role="alert" hidden></div>
     {% form_theme exchange_form 'bootstrap_5_layout.html.twig' %}
     {{ form(exchange_form) }}
-
 {% endblock %}

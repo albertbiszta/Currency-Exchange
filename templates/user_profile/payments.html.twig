@@ -11,9 +11,9 @@
         <tbody>
         {% for payment in payments %}
             <tr>
-                <td>   {{ payment.currency|upper }}</td>
-                <td>   {{ payment.amount }}</td>
-                <td>   {{ payment.date|date("d-m-Y") }}</td>
+                <td>{{ payment.currency|upper }}</td>
+                <td>{{ payment.amount }}</td>
+                <td>{{ payment.date|date("d-m-Y") }}</td>
                 <td>
                     {% if payment.iscompleted == 0 %}
                         <p>No</p>

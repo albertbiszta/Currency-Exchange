@@ -18,6 +18,11 @@ class PaymentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Payment::class);
     }
+    
+    public function findIncomplete(): array
+    {
+        return $this->findBy(['is_completed' => 0]);
+    }
 
     // /**
     //  * @return Payment[] Returns an array of Payment objects
