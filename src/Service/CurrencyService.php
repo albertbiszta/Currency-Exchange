@@ -46,14 +46,12 @@ class CurrencyService
         return ($currency === self::POLISH_ZLOTY_SHORTNAME) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
-    public static function getConversion(array $formData): float
+    public static function getConversion(Exchange $exchange): float
     {
-        $primaryCurrency = $formData[Exchange::PRIMARY_CURRENCY];
-        $targetCurrency = $formData[Exchange::TARGET_CURRENCY];
-        $primaryCurrencyRate = self::getCurrentRate($primaryCurrency);
-        $targetCurrencyRate = self::getCurrentRate($targetCurrency);
+        $primaryCurrencyRate = self::getCurrentRate($exchange->getPrimaryCurrency());
+        $targetCurrencyRate = self::getCurrentRate($exchange->getTargetCurrency());
 
-        return round(($formData[Exchange::AMOUNT] * $primaryCurrencyRate) / $targetCurrencyRate, 2);
+        return round(($exchange->getAmount() * $primaryCurrencyRate) / $targetCurrencyRate, 2);
     }
 
     public static function getDataForRatesChangeChart(string $currency, int $numberOfDays): array

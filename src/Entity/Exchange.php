@@ -37,17 +37,6 @@ class Exchange
     #[ORM\JoinColumn(nullable: false)]
     private User $User;
 
-    public function __construct(User $user, $amount, $amountAfterExchange, $primaryCurrency, $targetCurrency)
-    {
-        $this
-            ->setDate(new \DateTime())
-            ->setPrimaryCurrency($primaryCurrency)
-            ->setTargetCurrency($targetCurrency)
-            ->setAmount($amount)
-            ->setAmountAfterExchange($amountAfterExchange)
-            ->setUser($user);
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +110,16 @@ class Exchange
     public function setUser(?User $User): self
     {
         $this->User = $User;
+
+        return $this;
+    }
+
+    public function setMissingAttributes(User $user, float $amountAfterExchange): self
+    {
+        $this
+            ->setAmountAfterExchange($amountAfterExchange)
+            ->setDate(new \DateTime)
+            ->setUser($user);
 
         return $this;
     }

@@ -102,4 +102,14 @@ class Payment
 
         return $this;
     }
+
+    public function setMissingAttributes(User $user, bool $isCompleted = false): self
+    {
+        $this
+            ->setDate(new \DateTime)
+            ->setIsCompleted($isCompleted)
+            ->setUser($user);
+
+        return $this;
+    }
 }

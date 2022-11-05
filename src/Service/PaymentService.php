@@ -18,10 +18,7 @@ class PaymentService extends Service
 
     public function paymentHandle(Payment $payment): Session
     {
-        $payment
-            ->setUser($this->getUser())
-            ->setDate(new \DateTime())
-            ->setIsCompleted(0);
+        $payment->setMissingAttributes($this->getUser());
         $this->save($payment);
         Stripe::setApiKey($_ENV['APP_STRIPE_SK']);
 

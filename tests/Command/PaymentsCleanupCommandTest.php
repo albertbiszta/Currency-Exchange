@@ -13,7 +13,7 @@ class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
     /** @test */
     public function the_command_deletes_incomplete_payments()
     {
-        foreach ([0, 0, 1] as $isCompletedValue) {
+        foreach ([false, false, true] as $isCompletedValue) {
             $this->createPayment($this->createUser(), 1000, CurrencyService::EURO_SHORTNAME, $isCompletedValue);
         }
         $paymentRepository = $this->getRepository(Payment::class);

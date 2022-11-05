@@ -21,8 +21,7 @@ class PaymentController extends AbstractController
     #[Route('/payment', name: 'payment')]
     public function createPayment(Request $request): Response
     {
-        $payment = new Payment();
-        $form = $this->createForm(PaymentFormType::class, $payment);
+        $form = $this->createForm(PaymentFormType::class, new Payment);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $session = $this->paymentService->paymentHandle($form->getData());

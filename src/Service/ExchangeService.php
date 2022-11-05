@@ -18,30 +18,17 @@ class ExchangeService extends Service
     /**
      * @throws \Exception
      */
-    public function createExchange(array $formData): ?Exchange
+    public function createExchange(Exchange $exchange): ?Exchange
     {
-        if (!$this->userAccountService->isAccountBalanceSufficient($formData[Exchange::PRIMARY_CURRENCY], $formData[Exchange::AMOUNT])) {
+        if (!$this->userAccountService->isAccountBalanceSufficient($exchange->getPrimaryCurrency(),$exchange->getAmount())) {
             throw new ExchangeException('You have insufficient funds in that currency.');
         }
-        $amountAfterExchange = CurrencyService::getConversion($formData);
-        $exchange = new Exchange($this->getUser(), $formData[Exchange::AMOUNT], $amountAfterExchange, $formData[Exchange::PRIMARY_CURRENCY], $formData[Exchange::TARGET_CURRENCY]);
-        $this->entityManager->persist($exchange);
-        $this->entityManager->flush();
-        $this->userAccountService->changeAccountsBalances($formData, $amountAfterExchange);
+
+        $amountAfterExchange = CurrencyService::getConversion($exchange);
+        $exchange->setMissingAttributes($this->getUser(), $amountAfterExchange);
+        $this->saveEntity($exchange);
+        $this->userAccountService->changeAccountsBalances($exchange);
 
         return $exchange;
-    }
-
-    /**
-     * @return array{primaryCurrency: string, targetCurrency: string, amount: float}
-     */
-    public function getDataFromForm(FormInterface $form): array
-    {
-        $formData = [];
-        foreach ([Exchange::PRIMARY_CURRENCY, Exchange::TARGET_CURRENCY, Exchange::AMOUNT] as $field) {
-            $formData[$field] = $form[$field]->getData();
-        }
-
-        return $formData;
     }
 }

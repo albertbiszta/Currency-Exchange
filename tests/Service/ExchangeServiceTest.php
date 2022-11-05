@@ -28,7 +28,12 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
         $this->expectException(ExchangeException::class);
         $user = $this->getLoggedUser();
         $this->createUserAccount($user, 50, CurrencyService::POLISH_ZLOTY_SHORTNAME);
-        $this->exchangeService->createExchange($this->getFormData());
+        $exchange = new Exchange();
+        $exchange->setPrimaryCurrency(CurrencyService::POLISH_ZLOTY_SHORTNAME)
+            ->setTargetCurrency(CurrencyService::EURO_SHORTNAME)
+            ->setAmount(100);
+
+        $this->exchangeService->createExchange($exchange);
     }
 
     /** @test */
@@ -38,23 +43,14 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
         $this->assertEquals(0, $this->getNumberOfUserAccounts());
         $userAccount = $this->createUserAccount($user, 1000, CurrencyService::POLISH_ZLOTY_SHORTNAME);
         $this->assertEquals(1, $this->getNumberOfUserAccounts());
-        $this->exchangeService->createExchange($this->getFormData());
+        $exchange = new Exchange();
+        $exchange->setPrimaryCurrency(CurrencyService::POLISH_ZLOTY_SHORTNAME)
+            ->setTargetCurrency(CurrencyService::EURO_SHORTNAME)
+            ->setAmount(100);
+
+        $this->exchangeService->createExchange($exchange);
         $this->assertLessThan( 1000, $userAccount->getAmount());
         $this->assertEquals(2, $this->getNumberOfUserAccounts());
-    }
-
-    #[ArrayShape([
-        Exchange::PRIMARY_CURRENCY => "string",
-        Exchange::TARGET_CURRENCY => "string",
-        Exchange::AMOUNT => "int"
-    ])]
-    private function getFormData(): array
-    {
-        return [
-            Exchange::PRIMARY_CURRENCY => CurrencyService::POLISH_ZLOTY_SHORTNAME,
-            Exchange::TARGET_CURRENCY => CurrencyService::EURO_SHORTNAME,
-            Exchange::AMOUNT => 100,
-        ];
     }
 
     private function getNumberOfUserAccounts(): int

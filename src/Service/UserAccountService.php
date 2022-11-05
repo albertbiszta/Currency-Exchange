@@ -21,13 +21,12 @@ class UserAccountService extends Service
         return $currencyAccount && ($currencyAccount->getAmount() >= $exchangeAmount);
     }
 
-    public function changeAccountsBalances(array $formData, float $amountAfterExchange): void
+    public function changeAccountsBalances(Exchange $exchange): void
     {
-        $primaryCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $formData[Exchange::PRIMARY_CURRENCY]);
-        $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $formData[Exchange::AMOUNT]);
-        $this->entityManager->persist($primaryCurrencyUserAccount);
-        $this->entityManager->flush();
-        $this->addToAccount($formData[Exchange::TARGET_CURRENCY], $amountAfterExchange);
+        $primaryCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $exchange->getPrimaryCurrency());
+        $primaryCurrencyUserAccount->setAmount($primaryCurrencyUserAccount->getAmount() - $exchange->getAmount());
+        $this->saveEntity($primaryCurrencyUserAccount);
+        $this->addToAccount($exchange->getTargetCurrency(), $exchange->getAmountAfterExchange());
     }
 
     public function addToAccount(string $targetCurrency, float $amountAfterExchange): void
@@ -42,18 +41,12 @@ class UserAccountService extends Service
 
     private function create(string $currency, float $amount): void
     {
-        $this->save(new UserAccount($this->getUser(), $amount, $currency));
+        $this->saveEntity(new UserAccount($this->getUser(), $amount, $currency));
     }
 
     private function updateAmount(UserAccount $userAccount, float $amountAfterExchange): void
     {
         $userAccount->setAmount($userAccount->getAmount() + $amountAfterExchange);
-        $this->save($userAccount);
-    }
-
-    private function save(UserAccount $userAccount): void
-    {
-        $this->entityManager->persist($userAccount);
-        $this->entityManager->flush();
+        $this->saveEntity($userAccount);
     }
 }

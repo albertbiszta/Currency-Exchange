@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Exchange;
 use App\Service\CurrencyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,18 +23,21 @@ class CurrencyController extends AbstractController
     #[Route('/api/currency/chart')]
     public function chartData(Request $request): JsonResponse
     {
-        if ($request->isMethod('POST')) {
-            $data = $this->getPostData($request);
-            return new JsonResponse(CurrencyService::getLastDaysRatesForCurrency($data['currency'], $data['numberOfDays']));
-        }
+        $data = $this->getPostData($request);
+        return new JsonResponse(CurrencyService::getLastDaysRatesForCurrency($data['currency'], $data['numberOfDays']));
     }
 
     #[Route('/api/currency/conversion', name: 'currency_conversion')]
     public function conversionResult(Request $request): JsonResponse
     {
-        if ($request->isMethod('POST')) {
-            return new JsonResponse(CurrencyService::getConversion($this->getPostData($request)));
-        }
+        $formData = $this->getPostData($request);
+        $exchange = new Exchange();
+        $exchange
+            ->setAmount($formData[Exchange::AMOUNT])
+            ->setPrimaryCurrency($formData[Exchange::PRIMARY_CURRENCY])
+            ->setTargetCurrency($formData[Exchange::TARGET_CURRENCY]);
+
+        return new JsonResponse(CurrencyService::getConversion($exchange));
     }
 
     private function getPostData(Request $request): array

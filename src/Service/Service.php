@@ -16,4 +16,10 @@ abstract class Service
     {
         return $this->security->getUser();
     }
+
+    protected function saveEntity($entity): void
+    {
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Exchange;
 use App\Exception\ExchangeException;
 use App\Form\ExchangeFormType;
 use App\Service\ExchangeService;
@@ -30,12 +31,11 @@ class ExchangeController extends AbstractController
     #[Route('/exchange', name: 'exchange')]
     public function createExchange(Request $request): Response
     {
-        $form = $this->createForm(ExchangeFormType::class);
+        $form = $this->createForm(ExchangeFormType::class, new Exchange());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $formData = $this->exchangeService->getDataFromForm($form);  // TODO - use getDataFromForm() in service
-                $this->exchangeService->createExchange($formData);
+                $this->exchangeService->createExchange($form->getData());
                 $this->addFlash('success', 'Currency exchange completed successfully.');
             } catch (ExchangeException $e) {
                 $this->addFlash('error', $e->getMessage());
