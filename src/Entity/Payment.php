@@ -28,16 +28,6 @@ class Payment
     #[ORM\Column(type: 'boolean')]
     private bool $is_completed;
 
-/*    public function __construct(User $user, float $amount, string $currency, bool $isCompleted = false)
-    {
-        $this
-            ->setAmount($amount)
-            ->setCurrency($currency)
-            ->setDate(new \DateTime())
-            ->setIsCompleted($isCompleted)
-            ->setUser($user);
-    }*/
-
     public function getId(): ?int
     {
         return $this->id;
