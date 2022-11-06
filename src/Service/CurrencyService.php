@@ -10,6 +10,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class CurrencyService
 {
+    public const LIMIT_OF_NUMBER_OF_DAYS_ON_CHART = 90;
     private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 
     public static function getLastDaysRatesForCurrency(string $currency, int $numberOfDays): array

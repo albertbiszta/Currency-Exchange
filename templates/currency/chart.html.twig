@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block title %}Currency Exchange Chart{% endblock %}
+ {% block javascripts %}
+     {{ parent() }}
+     {{ encore_entry_script_tags('currencyChart') }}
+ {% endblock %}
 {% block body %}
+    <div>
+        <label for="currency-chart-number-of-days">Number of days: </label>
+        <input id="currency-chart-number-of-days" type="number" value="{{ numberOfDays }}">
+    </div>
     {{ render_chart(chart, {'class': 'currency-chart', 'style': 'height:40px; width: 200px'}) }}
 {% endblock %}

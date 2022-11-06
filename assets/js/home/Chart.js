@@ -65,4 +65,4 @@ class Chart {
   }
 }
 
-const chart = new Chart();
+const homeChart = new Chart();

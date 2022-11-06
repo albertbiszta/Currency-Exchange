@@ -13,10 +13,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class CurrencyController extends AbstractController
 {
     #[Route('/currency/chart/{currency}', name: 'chart')]
-    public function chart(string $currency): Response
+    #[Route('/currency/chart/{currency}/days/{numberOfDays}', name: 'chart_with_days')]
+    public function chart(string $currency, int $numberOfDays = 7): Response
     {
+        if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
+           return $this->redirectToRoute('chart_with_days', [
+                'currency' => $currency,
+                'numberOfDays' => $numberOfDaysLimit,
+            ]);
+        }
+
         return $this->render('currency/chart.html.twig', [
-            'chart' => CurrencyService::getChart($currency, 7),
+            'chart' => CurrencyService::getChart($currency, $numberOfDays),
+            'numberOfDays' => $numberOfDays,
         ]);
     }
 
