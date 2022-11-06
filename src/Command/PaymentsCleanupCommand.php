@@ -33,7 +33,7 @@ class PaymentsCleanupCommand extends Command
             $numberOfDeletedPayments++;
         }
         $this->entityManager->flush();
-        $output->write("Deleted {$numberOfDeletedPayments} payments");
+        $output->write("Deleted $numberOfDeletedPayments payments");
 
         return Command::SUCCESS;
     }

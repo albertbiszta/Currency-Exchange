@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Payment;
-use App\Exception\ExchangeException;
 use App\Exception\WithdrawException;
 use App\Form\PaymentFormType;
 use App\Service\PaymentService;

@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Currency;
 use App\Entity\Exchange;
 use App\Entity\UserAccount;
-use App\Exception\ExchangeException;
 use App\Exception\WithdrawException;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;

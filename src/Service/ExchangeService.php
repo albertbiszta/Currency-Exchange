@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Exchange;
 use App\Exception\ExchangeException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Security;
 
 class ExchangeService extends Service

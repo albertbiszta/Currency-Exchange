@@ -3,8 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Payment;
-use App\Exception\ExchangeException;
-use App\Exception\WithdrawException;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
