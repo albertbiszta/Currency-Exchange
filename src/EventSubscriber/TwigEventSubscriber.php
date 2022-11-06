@@ -9,16 +9,15 @@ use Twig\Environment;
 
 class TwigEventSubscriber implements EventSubscriberInterface
 {
-    private $user;
-
-    public function __construct(private Environment $twig, Security $security)
+    public function __construct(private Environment $twig, private Security $security)
     {
-        $this->user = $security->getUser();
     }
 
     public function onControllerEvent(ControllerEvent $event): void
     {
-        $this->user && $this->twig->addGlobal('accounts', $this->user->getUserAccounts());
+        if ($user = $this->security->getUser()) {
+            $this->twig->addGlobal('accounts', $user->getUserAccounts());
+        }
     }
 
     public static function getSubscribedEvents(): array
