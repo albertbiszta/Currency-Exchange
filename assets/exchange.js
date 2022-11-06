@@ -36,7 +36,7 @@ class Exchange {
   }
 
   showResult() {
-    fetch('/public/api/currency/conversion', {
+    fetch('/api/currency/conversion', {
       method: 'POST',
       body: JSON.stringify({
         'primaryCurrency': this.primaryCurrency.value,
