@@ -1,6 +1,19 @@
 {% extends 'base.html.twig' %}
-{% block title %}Payment{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 {% block body %}
+    <h3>{{ title }}</h3>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-error">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     {% form_theme payment_form 'bootstrap_5_layout.html.twig' %}
     {{ form(payment_form) }}
 {% endblock %}

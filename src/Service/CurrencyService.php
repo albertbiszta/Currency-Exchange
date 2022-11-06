@@ -30,7 +30,7 @@ class CurrencyService
 
     public static function getCurrentRate(string $currency): float
     {
-        return ($currency === Currency::POLISH_ZLOTY_SHORTNAME) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
+        return ($currency === Currency::POLISH_ZLOTY_CODE) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
     public static function getConversion(Exchange $exchange): float

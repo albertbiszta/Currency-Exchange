@@ -40,7 +40,8 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         #- { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
         - { path: '^/exchange', roles: IS_AUTHENTICATED_FULLY }
-        - { path: '^/payment', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/deposit', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/withdraw', roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

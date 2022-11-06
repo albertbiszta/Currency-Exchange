@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Payment;
+use App\Exception\ExchangeException;
+use App\Exception\WithdrawException;
 use App\Form\PaymentFormType;
-use App\Repository\PaymentRepository;
 use App\Service\PaymentService;
 use App\Service\UserAccountService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,39 +15,63 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PaymentController extends AbstractController
 {
-    public function __construct(private PaymentService $paymentService, private PaymentRepository $paymentRepository, private UserAccountService $userAccountService)
+    public function __construct(private PaymentService $paymentService, private UserAccountService $userAccountService)
     {
     }
 
-    #[Route('/payment', name: 'payment')]
-    public function createPayment(Request $request): Response
+    #[Route('/deposit', name: 'deposit')]
+    public function createDeposit(Request $request): Response
     {
-        $form = $this->createForm(PaymentFormType::class, new Payment);
+        $form = $this->createForm(PaymentFormType::class, new Payment(Payment::TYPE_DEPOSIT));
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $session = $this->paymentService->paymentHandle($form->getData());
+            $session = $this->paymentService->handleDeposit($form->getData());
             return $this->redirect($session->url, 303);
         }
-        return $this->render('payment/payment.html.twig', ['payment_form' => $form->createView()]);
+        return $this->render('payment/payment.html.twig', [
+            'payment_form' => $form->createView(),
+            'title' => 'Make deposit',
+        ]);
     }
 
-    #[Route('/payment/status-change/{paymentId}', name: 'payment_status_change')]
-    public function changePaymentStatus($paymentId): Response
+    #[Route('/withdraw', name: 'withdraw')]
+    public function createWithdraw(Request $request): Response
     {
-        $payment = $this->paymentRepository->findOneBy(['id' => $paymentId]);
-        $this->paymentService->setPaymentAsCompleted($payment);
-        $this->userAccountService->addToAccount($payment->getCurrency(), $payment->getAmount());
+        $form = $this->createForm(PaymentFormType::class, new Payment(Payment::TYPE_WITHDRAW));
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->paymentService->handleWithdraw($form->getData());
+                $this->addFlash('success', 'Withdraw completed successfully.');
+            } catch (WithdrawException $e) {
+                $this->addFlash('error', $e->getMessage());
+            } catch (\Exception) {
+                $this->addFlash('error', 'An error has occurred during the withdraw.');
+            }
 
-        return $this->redirectToRoute('payment_success_url');
+            return $this->redirectToRoute('withdraw');
+        }
+        return $this->render('payment/payment.html.twig', [
+            'payment_form' => $form->createView(),
+            'title' => 'Make withdraw',
+        ]);
     }
 
-    #[Route('/payment/success-url', name: 'payment_success_url')]
+    #[Route('/deposit/complete/{paymentId}', name: 'deposit_complete')]
+    public function completeDeposit($paymentId): Response
+    {
+        $this->paymentService->completeDeposit($paymentId);
+
+        return $this->redirectToRoute('deposit_success_url');
+    }
+
+    #[Route('/deposit/success-url', name: 'deposit_success_url')]
     public function successUrl(): Response
     {
         return $this->render('payment/success.html.twig', []);
     }
 
-    #[Route('/payment/cancel-url', name: 'payment_cancel_url')]
+    #[Route('/deposit/cancel-url', name: 'deposit_cancel_url')]
     public function cancelUrl(): Response
     {
         return $this->render('payment/cancel.html.twig', []);

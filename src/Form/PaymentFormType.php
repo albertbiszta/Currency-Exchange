@@ -17,7 +17,7 @@ class PaymentFormType extends AbstractType
     {
         $builder
             ->add('currency', ChoiceType::class, [
-                'choices' => Currency::CURRENCY_CHOICES,
+                'choices' => Currency::getFormChoices(),
             ])
             ->add('amount', NumberType::class)
             ->add('submit', SubmitType::class);

@@ -17,10 +17,10 @@ class ExchangeFormType extends AbstractType
     {
         $builder
             ->add(Exchange::ATTRIBUTE_PRIMARY_CURRENCY, ChoiceType::class, [
-                'choices' => Currency::CURRENCY_CHOICES,
+                'choices' => Currency::getFormChoices(),
             ])
             ->add(Exchange::ATTRIBUTE_TARGET_CURRENCY, ChoiceType::class, [
-                'choices' => Currency::CURRENCY_CHOICES,
+                'choices' => Currency::getFormChoices(),
             ])
             ->add(Exchange::ATTRIBUTE_AMOUNT, NumberType::class)
             ->add('submit', SubmitType::class);

@@ -26,10 +26,10 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         $this->expectException(ExchangeException::class);
         $user = $this->getLoggedUser();
-        $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY_SHORTNAME);
+        $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY_CODE);
         $exchange = new Exchange();
         $exchange->setPrimaryCurrency($userAccount->getCurrency())
-            ->setTargetCurrency(Currency::EURO_SHORTNAME)
+            ->setTargetCurrency(Currency::EURO_CODE)
             ->setAmount(100);
 
         $this->exchangeService->createExchange($exchange);
@@ -40,11 +40,11 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         $user = $this->getLoggedUser();
         $this->assertEquals(0, $this->getNumberOfUserAccounts());
-        $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY_SHORTNAME);
+        $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY_CODE);
         $this->assertEquals(1, $this->getNumberOfUserAccounts());
         $exchange = new Exchange();
         $exchange->setPrimaryCurrency($userAccount->getCurrency())
-            ->setTargetCurrency(Currency::EURO_SHORTNAME)
+            ->setTargetCurrency(Currency::EURO_CODE)
             ->setAmount(100);
 
         $this->exchangeService->createExchange($exchange);

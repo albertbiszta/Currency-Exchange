@@ -61,7 +61,7 @@ class DatabaseDependantTestCase extends WebTestCase
 
     protected function createPayment(User $user, float $amount, string $currency, bool $isCompleted = false): Payment
     {
-        $payment = new Payment();
+        $payment = new Payment(Payment::TYPE_DEPOSIT);
         $payment->setUser($user)
             ->setAmount($amount)
             ->setCurrency($currency)

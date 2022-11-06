@@ -2,8 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\Currency;
 use App\Entity\Exchange;
 use App\Entity\UserAccount;
+use App\Exception\ExchangeException;
+use App\Exception\WithdrawException;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -31,22 +34,28 @@ class UserAccountService extends Service
 
     public function addToAccount(string $targetCurrency, float $amountAfterExchange): void
     {
-        $targetCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $targetCurrency);
-        if ($targetCurrencyUserAccount) {
-            $this->updateAmount($targetCurrencyUserAccount, $amountAfterExchange);
+        $userAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $targetCurrency);
+        if ($userAccount) {
+            $userAccount->setAmount($userAccount->getAmount() + $amountAfterExchange);
         } else {
-            $this->create($targetCurrency, $amountAfterExchange);
+            $userAccount = new UserAccount($this->getUser(), $amountAfterExchange, $targetCurrency);
         }
-    }
-
-    private function create(string $currency, float $amount): void
-    {
-        $this->saveEntity(new UserAccount($this->getUser(), $amount, $currency));
-    }
-
-    private function updateAmount(UserAccount $userAccount, float $amountAfterExchange): void
-    {
-        $userAccount->setAmount($userAccount->getAmount() + $amountAfterExchange);
         $this->saveEntity($userAccount);
+    }
+
+    /**
+     * @throws \App\Exception\WithdrawException
+     */
+    public function subtractFromAccount(string $currency, float $amount): void
+    {
+        $userAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $currency);
+        if (!$userAccount) {
+            throw new WithdrawException('You do not have an account in this currency yet. Deposit funds.');
+        }
+        $newAmount = $userAccount->getAmount() - $amount;
+        if ($newAmount < 0) {
+            throw new WithdrawException('You have insufficient funds. Your account balance is ' . $userAccount->getAmount() . ' ' . Currency::getNameByCode($currency) );
+        }
+        $userAccount->setAmount($newAmount);
     }
 }

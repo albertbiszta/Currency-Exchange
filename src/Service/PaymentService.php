@@ -3,6 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Payment;
+use App\Exception\ExchangeException;
+use App\Exception\WithdrawException;
+use App\Repository\PaymentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -11,12 +14,17 @@ use Symfony\Component\Security\Core\Security;
 
 class PaymentService extends Service
 {
-    public function __construct(private UrlGeneratorInterface $router, protected Security $security, protected EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        protected Security               $security,
+        protected EntityManagerInterface $entityManager,
+        private UrlGeneratorInterface    $router,
+        private UserAccountService       $userAccountService,
+        private PaymentRepository        $paymentRepository
+    ) {
         parent::__construct($security, $this->entityManager);
     }
 
-    public function paymentHandle(Payment $payment): Session
+    public function handleDeposit(Payment $payment): Session
     {
         $payment->setMissingAttributes($this->getUser());
         $this->saveEntity($payment);
@@ -35,14 +43,26 @@ class PaymentService extends Service
                 ],
             ],
             'mode' => 'payment',
-            'success_url' => $this->router->generate('payment_status_change', ['paymentId' => $payment->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
-            'cancel_url' => $this->router->generate('payment_cancel_url', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'success_url' => $this->router->generate('deposit_complete', ['paymentId' => $payment->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            'cancel_url' => $this->router->generate('deposit_cancel_url', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
 
-    public function setPaymentAsCompleted(Payment $payment): void
+    /**
+     * @throws \App\Exception\WithdrawException
+     */
+    public function handleWithdraw(Payment $payment)
     {
-        $payment->setIsCompleted(1);
+        $this->userAccountService->subtractFromAccount($payment->getCurrency(), $payment->getAmount());
+        $payment->setMissingAttributes($this->getUser(), true);
         $this->saveEntity($payment);
+    }
+
+    public function completeDeposit(int $paymentId): void
+    {
+        $payment = $this->paymentRepository->findOneBy(['id' => $paymentId]);
+        $payment->setIsCompleted(true);
+        $this->saveEntity($payment);
+        $this->userAccountService->addToAccount($payment->getCurrency(), $payment->getAmount());
     }
 }

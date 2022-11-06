@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
 {
+    public const TYPE_DEPOSIT = 0;
+    public const TYPE_WITHDRAW = 1;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -27,6 +30,14 @@ class Payment
 
     #[ORM\Column(type: 'boolean')]
     private bool $is_completed;
+
+    #[ORM\Column(type: 'smallint')]
+    private ?int $type;
+
+    public function __construct(int $type)
+    {
+        $this->setType($type);
+    }
 
     public function getId(): ?int
     {
@@ -99,6 +110,23 @@ class Payment
             ->setDate(new \DateTime)
             ->setIsCompleted($isCompleted)
             ->setUser($user);
+
+        return $this;
+    }
+
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
+
+    public function getTypeName(): string
+    {
+        return $this->type === self::TYPE_DEPOSIT ? 'deposit': 'withdraw';
+    }
+
+    public function setType(int $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
