@@ -24,7 +24,7 @@ class Chart {
   }
 
   getChart() {
-    fetch('/api/currency/chart', {
+    fetch('/public/api/currency/chart', {
       method: 'POST',
       body: JSON.stringify({
         currency: this.currency,
