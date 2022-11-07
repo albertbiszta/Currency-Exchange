@@ -2,22 +2,21 @@
 
 namespace App\EventSubscriber;
 
+use App\Enum\Currency;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
 
-class TwigEventSubscriber implements EventSubscriberInterface
+class CurrencyChoicesEventSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly Environment $twig, private readonly Security $security)
+    public function __construct(private readonly Environment $twig)
     {
     }
 
     public function onControllerEvent(ControllerEvent $event): void
     {
-        if ($user = $this->security->getUser()) {
-            $this->twig->addGlobal('accounts', $user->getUserAccounts());
-        }
+        $this->twig->addGlobal('currencyChoices', Currency::getFormChoices());
     }
 
     public static function getSubscribedEvents(): array

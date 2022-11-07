@@ -12,7 +12,7 @@
         <tbody>
         {% for payment in payments %}
             <tr>
-                <td>{{ payment.currency|upper }}</td>
+                <td>{{ payment.currency.getCode|upper|upper }}</td>
                 <td>{{ payment.amount }}</td>
                 <td>{{ payment.date|date("d-m-Y") }}</td>
                 <td>{{ payment.getTypeName }}</td>

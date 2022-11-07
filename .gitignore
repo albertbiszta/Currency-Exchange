@@ -62,3 +62,7 @@ public/build
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+ideas
+.env
+.env.test

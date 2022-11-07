@@ -10,8 +10,8 @@
         <tbody>
         {% for exchange in exchanges %}
             <tr>
-                <td><b>{{ exchange.amount }}</b>{{ exchange.primaryCurrency|upper }}</td>
-                <td><b>{{ exchange.amountAfterExchange }}</b>{{ exchange.targetCurrency|upper }}</td>
+                <td><b>{{ exchange.amount }}</b>{{ exchange.primaryCurrency.getCode|upper }}</td>
+                <td><b>{{ exchange.amountAfterExchange }}</b>{{ exchange.targetCurrency.getCode|upper }}</td>
                 <td>{{ exchange.date|date("d-m-Y") }}</td>
             </tr>
         {% endfor %}

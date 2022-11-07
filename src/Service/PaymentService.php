@@ -33,7 +33,7 @@ class PaymentService extends Service
             'line_items' => [
                 [
                     'price_data' => [
-                        'currency' => $payment->getCurrency(),
+                        'currency' => $payment->getCurrency()->getCode(),
                         'product_data' => ['name' => 'Currency payment'],
                         'unit_amount' => $payment->getAmount() * 100,
                     ],

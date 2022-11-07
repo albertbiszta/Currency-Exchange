@@ -13,7 +13,7 @@
         <tbody>
         {% for account in accounts %}
             <tr>
-                <td>   {{ account.currency|upper }}</td>
+                <td>   {{ account.currency.getCode|upper }}</td>
                 <td>   {{ account.amount }}</td>
             </tr>
         {% endfor %}

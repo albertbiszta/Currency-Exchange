@@ -13,13 +13,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CurrencyController extends AbstractController
 {
-    #[Route('/currency/chart/{currency}', name: 'chart')]
-    #[Route('/currency/chart/{currency}/days/{numberOfDays}', name: 'chart_with_days')]
-    public function chart(Currency $currency, int $numberOfDays = 7): Response
+    #[Route('/currency/chart/{currencyCode}', name: 'chart')]
+    #[Route('/currency/chart/{currencyCode}/days/{numberOfDays}', name: 'chart_with_days')]
+    public function chart(string $currencyCode, int $numberOfDays = 7): Response
     {
+        if (!$currency = Currency::from($currencyCode)) {
+            return $this->redirectToRoute('home');
+        }
+
         if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
            return $this->redirectToRoute('chart_with_days', [
-                'currency' => $currency,
+                'currency' => $currencyCode,
                 'numberOfDays' => $numberOfDaysLimit,
             ]);
         }
@@ -34,7 +38,7 @@ class CurrencyController extends AbstractController
     public function chartData(Request $request): JsonResponse
     {
         $data = $this->getPostData($request);
-        return new JsonResponse(CurrencyService::getLastDaysRatesForCurrency($data['currency'], $data['numberOfDays']));
+        return new JsonResponse(CurrencyService::getLastDaysRatesForCurrency(Currency::from($data['currency']), $data['numberOfDays']));
     }
 
     #[Route('/api/currency/conversion', name: 'currency_conversion')]
@@ -44,8 +48,8 @@ class CurrencyController extends AbstractController
         $exchange = new Exchange();
         $exchange
             ->setAmount($formData[Exchange::ATTRIBUTE_AMOUNT])
-            ->setPrimaryCurrency($formData[Exchange::ATTRIBUTE_PRIMARY_CURRENCY])
-            ->setTargetCurrency($formData[Exchange::ATTRIBUTE_TARGET_CURRENCY]);
+            ->setPrimaryCurrency(Currency::from($formData[Exchange::ATTRIBUTE_PRIMARY_CURRENCY]))
+            ->setTargetCurrency(Currency::from($formData[Exchange::ATTRIBUTE_TARGET_CURRENCY]));
 
         return new JsonResponse(CurrencyService::getConversion($exchange));
     }

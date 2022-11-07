@@ -23,7 +23,7 @@ class UserAccountRepository extends ServiceEntityRepository
 
     public function findOneByUserAndCurrency(UserInterface $user, Currency $currency): ?UserAccount
     {
-        return $this->findOneBy(['User' => $user, 'currency' => $currency]);
+        return $this->findOneBy(['User' => $user, 'currency' => ['value' => $currency->getCode()]]);
     }
 
     // /**

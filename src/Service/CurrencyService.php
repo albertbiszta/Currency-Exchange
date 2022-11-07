@@ -21,7 +21,7 @@ class CurrencyService
         ], self::getApiResponse($currency, "/last/$numberOfDays")['rates']);
     }
 
-    public static function getPercentageChangeForCurrency(string $currency): float
+    public static function getPercentageChangeForCurrency(Currency $currency): float
     {
         $rates = self::getLastDaysRatesForCurrency($currency, 2);
         $change = ($rates[1]['mid'] - $rates[0]['mid']) / $rates[0]['mid'];
@@ -31,7 +31,7 @@ class CurrencyService
 
     public static function getCurrentRate(Currency $currency): float
     {
-        return ($currency === Currency::POLISH_ZLOTY) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
+        return $currency->isDefault() ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
     public static function getConversion(Exchange $exchange): float
@@ -42,7 +42,7 @@ class CurrencyService
         return round(($exchange->getAmount() * $primaryCurrencyRate) / $targetCurrencyRate, 2);
     }
 
-    public static function getDataForRatesChangeChart(string $currency, int $numberOfDays): array
+    public static function getDataForRatesChangeChart(Currency $currency, int $numberOfDays): array
     {
         return array_map(fn($dayData) => [
             'date' => $dayData['effectiveDate'],

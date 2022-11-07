@@ -33,10 +33,10 @@
                         <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">Fluctuations in exchange rates</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ path('chart', {currency: 'usd'}) }}">U.S. Dollar</a></li>
-                            <li><a class="dropdown-item" href="{{ path('chart', {currency: 'eur'}) }}">Euro</a></li>
-                            <li><a class="dropdown-item" href="{{ path('chart', {currency: 'chf'}) }}">Swiss Franc</a></li>
-                            <li><a class="dropdown-item" href="{{ path('chart', {currency: 'gbp'}) }}">Pound Sterling</a></li>
+                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'usd'}) }}">U.S. Dollar</a></li>
+                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'eur'}) }}">Euro</a></li>
+                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'chf'}) }}">Swiss Franc</a></li>
+                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'gbp'}) }}">Pound Sterling</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ path('calculator') }}">Calculator</a></li>
@@ -54,7 +54,7 @@
                                 {% if accounts %}
                                     {% for account in accounts %}
                                         <li><a class="dropdown-item"
-                                               href=""><b>{{ account.currency|upper }}</b> {{ account.amount }}</a></li>
+                                               href=""><b>{{ account.currency.getCode|upper }}</b> {{ account.amount }}</a></li>
                                     {% endfor %}
                                 {% else %}
                                     <b>You don't have any accounts</b>
