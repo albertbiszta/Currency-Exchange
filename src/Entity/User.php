@@ -33,9 +33,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $exchanges;
 
     #[ORM\OneToMany(mappedBy: 'User', targetEntity: UserAccount::class)]
-    private $currency;
-
-    #[ORM\OneToMany(mappedBy: 'User', targetEntity: UserAccount::class)]
     private $userAccounts;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Payment::class)]
@@ -44,7 +41,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->exchanges = new ArrayCollection();
-        $this->currency = new ArrayCollection();
         $this->userAccounts = new ArrayCollection();
         $this->payments = new ArrayCollection();
     }

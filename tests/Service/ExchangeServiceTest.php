@@ -2,8 +2,8 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\Currency;
 use App\Entity\Exchange;
+use App\Enum\Currency;
 use App\Exception\ExchangeException;
 use App\Repository\UserAccountRepository;
 use App\Service\ExchangeService;
@@ -26,10 +26,10 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         $this->expectException(ExchangeException::class);
         $user = $this->getLoggedUser();
-        $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY_CODE);
+        $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY);
         $exchange = new Exchange();
         $exchange->setPrimaryCurrency($userAccount->getCurrency())
-            ->setTargetCurrency(Currency::EURO_CODE)
+            ->setTargetCurrency(Currency::EURO)
             ->setAmount(100);
 
         $this->exchangeService->createExchange($exchange);
@@ -40,11 +40,11 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         $user = $this->getLoggedUser();
         $this->assertEquals(0, $this->getNumberOfUserAccounts());
-        $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY_CODE);
+        $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY);
         $this->assertEquals(1, $this->getNumberOfUserAccounts());
         $exchange = new Exchange();
         $exchange->setPrimaryCurrency($userAccount->getCurrency())
-            ->setTargetCurrency(Currency::EURO_CODE)
+            ->setTargetCurrency(Currency::EURO)
             ->setAmount(100);
 
         $this->exchangeService->createExchange($exchange);

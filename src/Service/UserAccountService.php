@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-use App\Entity\Currency;
 use App\Entity\Exchange;
 use App\Entity\UserAccount;
+use App\Enum\Currency;
 use App\Exception\WithdrawException;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,12 +12,12 @@ use Symfony\Component\Security\Core\Security;
 
 class UserAccountService extends Service
 {
-    public function __construct(private UserAccountRepository $userAccountRepository, protected Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(private readonly UserAccountRepository $userAccountRepository, protected Security $security, protected EntityManagerInterface $entityManager)
     {
         parent::__construct($security, $this->entityManager);
     }
 
-    public function isAccountBalanceSufficient(string $primaryCurrency, float $exchangeAmount): bool
+    public function isAccountBalanceSufficient(Currency $primaryCurrency, float $exchangeAmount): bool
     {
         $currencyAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $primaryCurrency);
         return $currencyAccount && ($currencyAccount->getAmount() >= $exchangeAmount);
@@ -31,7 +31,7 @@ class UserAccountService extends Service
         $this->addToAccount($exchange->getTargetCurrency(), $exchange->getAmountAfterExchange());
     }
 
-    public function addToAccount(string $targetCurrency, float $amountAfterExchange): void
+    public function addToAccount(Currency $targetCurrency, float $amountAfterExchange): void
     {
         $userAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $targetCurrency);
         if ($userAccount) {
@@ -45,7 +45,7 @@ class UserAccountService extends Service
     /**
      * @throws \App\Exception\WithdrawException
      */
-    public function subtractFromAccount(string $currency, float $amount): void
+    public function subtractFromAccount(Currency $currency, float $amount): void
     {
         $userAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $currency);
         if (!$userAccount) {

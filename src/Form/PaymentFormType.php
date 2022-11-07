@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\Currency;
 use App\Entity\Payment;
+use App\Enum\Currency;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;

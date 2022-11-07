@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Entity\UserAccount;
+use App\Enum\Currency;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,7 +21,7 @@ class UserAccountRepository extends ServiceEntityRepository
         parent::__construct($registry, UserAccount::class);
     }
 
-    public function findOneByUserAndCurrency(UserInterface $user, string $currency): ?UserAccount
+    public function findOneByUserAndCurrency(UserInterface $user, Currency $currency): ?UserAccount
     {
         return $this->findOneBy(['User' => $user, 'currency' => $currency]);
     }

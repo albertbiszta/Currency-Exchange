@@ -31,3 +31,7 @@ services:
     App\Repository\:
         resource: '../src/Repository/*'
         public: true
+
+    _instanceof:
+        App\DoctrineType\EnumType:
+            tags: [ 'app.doctrine_enum_type' ]

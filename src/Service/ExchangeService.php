@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Exchange;
@@ -9,7 +11,7 @@ use Symfony\Component\Security\Core\Security;
 
 class ExchangeService extends Service
 {
-    public function __construct(private UserAccountService $userAccountService, protected Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(private readonly UserAccountService $userAccountService, protected Security $security, protected EntityManagerInterface $entityManager)
     {
         parent::__construct($security, $this->entityManager);
     }

@@ -6,6 +6,8 @@ use App\Entity\Exchange;
 use App\Entity\Payment;
 use App\Entity\User;
 use App\Entity\UserAccount;
+use App\Enum\Currency;
+use App\Enum\PaymentType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -51,7 +53,7 @@ class DatabaseDependantTestCase extends WebTestCase
         return $user;
     }
 
-    protected function createUserAccount(User $user, float $amount, string $currency): UserAccount
+    protected function createUserAccount(User $user, float $amount, Currency $currency): UserAccount
     {
         $userAccount = new UserAccount($user, $amount, $currency);
         $this->saveEntity($userAccount);
@@ -59,9 +61,9 @@ class DatabaseDependantTestCase extends WebTestCase
         return $userAccount;
     }
 
-    protected function createPayment(User $user, float $amount, string $currency, bool $isCompleted = false): Payment
+    protected function createPayment(User $user, float $amount, Currency $currency, bool $isCompleted = false, PaymentType $type = PaymentType::DEPOSIT): Payment
     {
-        $payment = new Payment(Payment::TYPE_DEPOSIT);
+        $payment = new Payment($type);
         $payment->setUser($user)
             ->setAmount($amount)
             ->setCurrency($currency)

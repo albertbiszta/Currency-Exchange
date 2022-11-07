@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\Currency;
 use App\Entity\Exchange;
+use App\Enum\Currency;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\UX\Chartjs\Builder\ChartBuilder;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -13,7 +13,7 @@ class CurrencyService
     public const LIMIT_OF_NUMBER_OF_DAYS_ON_CHART = 90;
     private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 
-    public static function getLastDaysRatesForCurrency(string $currency, int $numberOfDays): array
+    public static function getLastDaysRatesForCurrency(Currency $currency, int $numberOfDays): array
     {
         return array_map(fn($dayData) => [
             'date' => $dayData['effectiveDate'],
@@ -29,9 +29,9 @@ class CurrencyService
         return round($change * 100, 2);
     }
 
-    public static function getCurrentRate(string $currency): float
+    public static function getCurrentRate(Currency $currency): float
     {
-        return ($currency === Currency::POLISH_ZLOTY_CODE) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
+        return ($currency === Currency::POLISH_ZLOTY) ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
     public static function getConversion(Exchange $exchange): float
@@ -50,7 +50,7 @@ class CurrencyService
         ], self::getLastDaysRatesForCurrency($currency, $numberOfDays));
     }
 
-    public static function getChart(string $currency, int $numberOfDays): Chart
+    public static function getChart(Currency $currency, int $numberOfDays): Chart
     {
         $days = [];
         $rates = [];
@@ -63,7 +63,7 @@ class CurrencyService
             'labels' => $days,
             'datasets' => [
                 [
-                    'label' => strtoupper($currency) . ' fluctuations in recent days',
+                    'label' => strtoupper($currency->getCode()) . ' fluctuations in recent days',
                     'borderColor' => 'rgb(34, 72, 196)',
                     'data' => $rates,
                     'tension' => 0.0,
@@ -83,8 +83,8 @@ class CurrencyService
         return $chart;
     }
 
-    private static function getApiResponse(string $currency, string $extraPath = ''): array
+    private static function getApiResponse(Currency $currency, string $extraPath = ''): array
     {
-        return HttpClient::create()->request('GET', self::URL . $currency . $extraPath)->toArray();
+        return HttpClient::create()->request('GET', self::URL . $currency->getCode() . $extraPath)->toArray();
     }
 }

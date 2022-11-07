@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\DoctrineType\CurrencyEnumType;
+use App\Enum\Currency;
 use App\Repository\ExchangeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,18 +13,18 @@ class Exchange
     public const ATTRIBUTE_PRIMARY_CURRENCY = 'primaryCurrency';
     public const ATTRIBUTE_TARGET_CURRENCY = 'targetCurrency';
     public const ATTRIBUTE_AMOUNT = 'amount';
-    public const ATTRIBUTE_AMOUNT_AFTER_EXCHANGE = 'amountAfterExchange';
+    public const ATTRIBUTE_AMOUNT_AFTER_EXCHANGE  = 'amountAfterExchange';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 3)]
-    private string $primaryCurrency;
+    #[ORM\Column(type: CurrencyEnumType::NAME, length: 3)]
+    private Currency $primaryCurrency;
 
-    #[ORM\Column(type: 'string', length: 3)]
-    private string $targetCurrency;
+    #[ORM\Column(type: CurrencyEnumType::NAME, length: 3)]
+    private Currency $targetCurrency;
 
     #[ORM\Column(type: 'float')]
     private float $amount;
@@ -37,36 +39,36 @@ class Exchange
     #[ORM\JoinColumn(nullable: false)]
     private User $User;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getPrimaryCurrency(): ?string
+    public function getPrimaryCurrency(): Currency
     {
         return $this->primaryCurrency;
     }
 
-    public function setPrimaryCurrency(string $primaryCurrency): self
+    public function setPrimaryCurrency(Currency $primaryCurrency): self
     {
         $this->primaryCurrency = $primaryCurrency;
 
         return $this;
     }
 
-    public function getTargetCurrency(): ?string
+    public function getTargetCurrency(): Currency
     {
         return $this->targetCurrency;
     }
 
-    public function setTargetCurrency(string $targetCurrency): self
+    public function setTargetCurrency(Currency $targetCurrency): self
     {
         $this->targetCurrency = $targetCurrency;
 
         return $this;
     }
 
-    public function getAmount(): ?float
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -78,7 +80,7 @@ class Exchange
         return $this;
     }
 
-    public function getAmountAfterExchange(): ?float
+    public function getAmountAfterExchange(): float
     {
         return $this->amountAfterExchange;
     }
@@ -90,7 +92,7 @@ class Exchange
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
@@ -102,12 +104,12 @@ class Exchange
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->User;
     }
 
-    public function setUser(?User $User): self
+    public function setUser(User $User): self
     {
         $this->User = $User;
 

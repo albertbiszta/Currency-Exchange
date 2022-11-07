@@ -15,9 +15,9 @@ class PaymentService extends Service
     public function __construct(
         protected Security               $security,
         protected EntityManagerInterface $entityManager,
-        private UrlGeneratorInterface    $router,
-        private UserAccountService       $userAccountService,
-        private PaymentRepository        $paymentRepository
+        private                          readonly UrlGeneratorInterface    $router,
+        private                          readonly UserAccountService       $userAccountService,
+        private                          readonly PaymentRepository        $paymentRepository
     ) {
         parent::__construct($security, $this->entityManager);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\DoctrineType\CurrencyEnumType;
+use App\Enum\Currency;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,15 +17,15 @@ class UserAccount
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'userAccounts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $User;
+    private User $User;
 
-    #[ORM\Column(type: 'string', length: 3)]
-    private string $currency;
+    #[ORM\Column(type: CurrencyEnumType::NAME, length: 3)]
+    private Currency $currency;
 
     #[ORM\Column(type: 'float')]
     private float $amount;
 
-    public function __construct(User $user, float $amount, string $currency)
+    public function __construct(User $user, float $amount, Currency $currency)
     {
         $this
             ->setUser($user)
@@ -31,12 +33,12 @@ class UserAccount
             ->setCurrency($currency);
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->User;
     }
@@ -48,12 +50,12 @@ class UserAccount
         return $this;
     }
 
-    public function getCurrency(): ?string
+    public function getCurrency(): Currency
     {
         return $this->currency;
     }
 
-    public function setCurrency(string $currency): self
+    public function setCurrency(Currency $currency): self
     {
         $this->currency = $currency;
 

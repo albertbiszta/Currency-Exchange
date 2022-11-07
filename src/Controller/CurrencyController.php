@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Exchange;
+use App\Enum\Currency;
 use App\Service\CurrencyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +15,7 @@ class CurrencyController extends AbstractController
 {
     #[Route('/currency/chart/{currency}', name: 'chart')]
     #[Route('/currency/chart/{currency}/days/{numberOfDays}', name: 'chart_with_days')]
-    public function chart(string $currency, int $numberOfDays = 7): Response
+    public function chart(Currency $currency, int $numberOfDays = 7): Response
     {
         if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
            return $this->redirectToRoute('chart_with_days', [

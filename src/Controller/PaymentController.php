@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Payment;
+use App\Enum\PaymentType;
 use App\Exception\WithdrawException;
 use App\Form\PaymentFormType;
 use App\Service\PaymentService;
@@ -21,7 +22,7 @@ class PaymentController extends AbstractController
     #[Route('/deposit', name: 'deposit')]
     public function createDeposit(Request $request): Response
     {
-        $form = $this->createForm(PaymentFormType::class, new Payment(Payment::TYPE_DEPOSIT));
+        $form = $this->createForm(PaymentFormType::class, new Payment(PaymentType::DEPOSIT));
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $session = $this->paymentService->handleDeposit($form->getData());
@@ -36,7 +37,7 @@ class PaymentController extends AbstractController
     #[Route('/withdraw', name: 'withdraw')]
     public function createWithdraw(Request $request): Response
     {
-        $form = $this->createForm(PaymentFormType::class, new Payment(Payment::TYPE_WITHDRAW));
+        $form = $this->createForm(PaymentFormType::class, new Payment(PaymentType::WITHDRAW));
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
