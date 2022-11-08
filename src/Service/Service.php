@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class Service
 {
-    public function __construct(protected Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(protected EntityManagerInterface $entityManager, protected Security $security)
     {
     }
 

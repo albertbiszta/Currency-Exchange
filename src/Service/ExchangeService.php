@@ -11,9 +11,9 @@ use Symfony\Component\Security\Core\Security;
 
 class ExchangeService extends Service
 {
-    public function __construct(private readonly UserAccountService $userAccountService, protected Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(protected EntityManagerInterface $entityManager, protected Security $security, private readonly UserAccountService $userAccountService)
     {
-        parent::__construct($security, $this->entityManager);
+        parent::__construct($this->entityManager, $security);
     }
 
     /**

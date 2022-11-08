@@ -12,9 +12,9 @@ use Symfony\Component\Security\Core\Security;
 
 class UserAccountService extends Service
 {
-    public function __construct(private readonly UserAccountRepository $userAccountRepository, protected Security $security, protected EntityManagerInterface $entityManager)
+    public function __construct(protected EntityManagerInterface $entityManager, protected Security $security, private readonly UserAccountRepository $userAccountRepository,)
     {
-        parent::__construct($security, $this->entityManager);
+        parent::__construct($this->entityManager, $security,);
     }
 
     public function isAccountBalanceSufficient(Currency $primaryCurrency, float $exchangeAmount): bool

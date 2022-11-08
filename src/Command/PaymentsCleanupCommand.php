@@ -12,7 +12,7 @@ class PaymentsCleanupCommand extends Command
 {
     protected static $defaultName = 'app:delete-incomplete-payments';
 
-    public function __construct(private PaymentRepository $paymentRepository, private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PaymentRepository $paymentRepository)
     {
         parent::__construct();
     }
@@ -27,13 +27,13 @@ class PaymentsCleanupCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $numberOfDeletedPayments = 0;
-        foreach ($this->paymentRepository->findIncomplete() as $payment) {
+        $payments = $this->paymentRepository->findIncomplete();
+        $numberOfPayments = count($payments);
+        foreach ($payments as $payment) {
             $this->entityManager->remove($payment);
-            $numberOfDeletedPayments++;
         }
         $this->entityManager->flush();
-        $output->write("Deleted $numberOfDeletedPayments payments");
+        $output->write("Deleted $numberOfPayments payments \n");
 
         return Command::SUCCESS;
     }

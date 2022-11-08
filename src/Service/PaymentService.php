@@ -13,13 +13,13 @@ use Symfony\Component\Security\Core\Security;
 class PaymentService extends Service
 {
     public function __construct(
-        protected Security               $security,
         protected EntityManagerInterface $entityManager,
-        private                          readonly UrlGeneratorInterface    $router,
-        private                          readonly UserAccountService       $userAccountService,
-        private                          readonly PaymentRepository        $paymentRepository
+        protected Security               $security,
+        private                          readonly UrlGeneratorInterface $router,
+        private                          readonly UserAccountService $userAccountService,
+        private                          readonly PaymentRepository $paymentRepository
     ) {
-        parent::__construct($security, $this->entityManager);
+        parent::__construct($this->entityManager, $security);
     }
 
     public function handleDeposit(Payment $payment): Session
