@@ -66,3 +66,5 @@ public/build
 ideas
 .env
 .env.test
+/.idea
+/translations
