@@ -17,17 +17,6 @@ class ExchangeController extends AbstractController
     {
     }
 
-    #[Route('/calculator', name: 'calculator')]
-    public function calculator(): Response
-    {
-        $form = $this->createForm(ExchangeFormType::class)->remove('submit');
-
-        return $this->render('exchange/calculator.html.twig', [
-            'exchange_form' => $form->createView(),
-        ]);
-    }
-
-
     #[Route('/exchange', name: 'exchange')]
     public function createExchange(Request $request): Response
     {
