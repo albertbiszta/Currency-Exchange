@@ -30,4 +30,6 @@ form input[type="text"], input[type="password"] {
     margin-bottom: 2rem;
 }
 
-
+p.percentage-change-message {
+    margin-top: 2rem;
+}

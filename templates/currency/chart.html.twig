@@ -10,4 +10,6 @@
         <input id="currency-chart-number-of-days" type="number" value="{{ numberOfDays }}">
     </div>
     {{ render_chart(chart, {'class': 'currency-chart', 'style': 'height:40px; width: 200px'}) }}
+
+    <p class="percentage-change-message">{{ currencyPercentageChangeMessage }}</p>
 {% endblock %}

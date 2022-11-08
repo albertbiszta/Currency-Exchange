@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Exchange;
 use App\Enum\Currency;
+use App\Helper\Message;
 use App\Service\CurrencyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,12 +20,11 @@ class CurrencyController extends AbstractController
     #[Route('/currency/chart/{currencyCode}/days/{numberOfDays}', name: 'chart_with_days')]
     public function chart(string $currencyCode, int $numberOfDays = 7): Response
     {
-        if (!$currency = Currency::from($currencyCode)) {
+        if (!$currency = Currency::tryFrom($currencyCode)) {
             return $this->redirectToRoute('home');
         }
-
         if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
-           return $this->redirectToRoute('chart_with_days', [
+            return $this->redirectToRoute('chart_with_days', [
                 'currency' => $currencyCode,
                 'numberOfDays' => $numberOfDaysLimit,
             ]);
@@ -33,6 +33,7 @@ class CurrencyController extends AbstractController
         return $this->render('currency/chart.html.twig', [
             'chart' => CurrencyService::getChart($currency, $numberOfDays),
             'numberOfDays' => $numberOfDays,
+            'currencyPercentageChangeMessage' => Message::getCurrencyPercentageChangeMessage(CurrencyService::getPercentageChange($currency, $numberOfDays)),
         ]);
     }
 
@@ -40,7 +41,7 @@ class CurrencyController extends AbstractController
     public function chartData(Request $request): JsonResponse
     {
         $data = $this->getPostData($request);
-        return new JsonResponse(CurrencyService::getLastDaysRatesForCurrency(Currency::from($data['currency']), $data['numberOfDays']));
+        return new JsonResponse(CurrencyService::getLastDaysRates(Currency::from($data['currency']), $data['numberOfDays']));
     }
 
     #[Route('/api/currency/conversion', name: 'currency_conversion')]

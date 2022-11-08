@@ -15,7 +15,7 @@ class CurrencyService
     public const LIMIT_OF_NUMBER_OF_DAYS_ON_CHART = 90;
     private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 
-    public static function getLastDaysRatesForCurrency(Currency $currency, int $numberOfDays): array
+    public static function getLastDaysRates(Currency $currency, int $numberOfDays): array
     {
         return array_map(fn($dayData) => [
             'date' => $dayData['effectiveDate'],
@@ -23,10 +23,11 @@ class CurrencyService
         ], self::getApiResponse($currency, "/last/$numberOfDays")['rates']);
     }
 
-    public static function getPercentageChangeForCurrency(Currency $currency): float
+    public static function getPercentageChange(Currency $currency, int $numberOfDays): float
     {
-        $rates = self::getLastDaysRatesForCurrency($currency, 2);
-        $change = ($rates[1]['mid'] - $rates[0]['mid']) / $rates[0]['mid'];
+        $rates = self::getLastDaysRates($currency, $numberOfDays);
+        $lastIndex = count($rates) - 1;
+        $change = (($rates[$lastIndex]['rate']) - $rates[0]['rate']) / $rates[0]['rate'];
 
         return round($change * 100, 2);
     }
@@ -49,14 +50,14 @@ class CurrencyService
         return array_map(fn($dayData) => [
             'date' => $dayData['effectiveDate'],
             'rate' => $dayData['mid'],
-        ], self::getLastDaysRatesForCurrency($currency, $numberOfDays));
+        ], self::getLastDaysRates($currency, $numberOfDays));
     }
 
     public static function getChart(Currency $currency, int $numberOfDays): Chart
     {
         $days = [];
         $rates = [];
-        foreach(self::getLastDaysRatesForCurrency($currency, $numberOfDays) as $rate) {
+        foreach(self::getLastDaysRates($currency, $numberOfDays) as $rate) {
             $days[] = $rate['date'];
             $rates[] = round($rate['rate'], 3);
         }
