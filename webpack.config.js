@@ -16,7 +16,7 @@ Encore
    * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
    */
   .addEntry('app', './assets/app.js')
-  .addEntry('exchange', './assets/js/Exchange.js')
+  .addEntry('exchange', './assets/js/Exchange.ts')
   .addEntry('currencyChart', './assets/js/currency/Chart.ts')
   .addEntry('homeChart', './assets/js/home/Chart.ts')
 
