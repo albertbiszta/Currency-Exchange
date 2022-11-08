@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Security;
@@ -20,6 +21,7 @@ class TwigEventSubscriber implements EventSubscriberInterface
         }
     }
 
+    #[ArrayShape([ControllerEvent::class => "string"])]
     public static function getSubscribedEvents(): array
     {
         return [ControllerEvent::class => 'onControllerEvent',];
