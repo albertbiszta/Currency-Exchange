@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enum;
 
 enum Currency: string
@@ -39,15 +41,5 @@ enum Currency: string
     public function isDefault(): bool
     {
         return $this === self::POLISH_ZLOTY;
-    }
-
-    private static function getNames(): array
-    {
-        return array_map(fn(self $currency) => $currency->getName(), self::cases());
-    }
-
-    private static function getCodes(): array
-    {
-        return array_map(fn(self $currency) => $currency->value, self::cases());
     }
 }

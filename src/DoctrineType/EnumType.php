@@ -26,7 +26,7 @@ abstract class EnumType extends Type
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if (false === enum_exists($this::getClass(), true)) {
+        if (!enum_exists($this::getClass(), true)) {
             throw new LogicException("This class should be an enum");
         }
         return $this::getClass()::tryFrom($value);

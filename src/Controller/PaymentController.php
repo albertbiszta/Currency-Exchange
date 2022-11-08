@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Payment;
@@ -7,7 +9,6 @@ use App\Enum\PaymentType;
 use App\Exception\WithdrawException;
 use App\Form\PaymentFormType;
 use App\Service\PaymentService;
-use App\Service\UserAccountService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
