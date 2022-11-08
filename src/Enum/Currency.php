@@ -12,7 +12,7 @@ enum Currency: string
 
     public static function getFormChoices(): array
     {
-        return array_combine(self::getNames(), self::getCodes());
+        return array_filter(self::cases(), fn($currency) => !$currency->isDefault());
     }
 
     public function getCode(): string

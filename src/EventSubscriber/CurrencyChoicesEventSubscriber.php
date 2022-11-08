@@ -3,9 +3,9 @@
 namespace App\EventSubscriber;
 
 use App\Enum\Currency;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
 
 class CurrencyChoicesEventSubscriber implements EventSubscriberInterface
@@ -19,6 +19,7 @@ class CurrencyChoicesEventSubscriber implements EventSubscriberInterface
         $this->twig->addGlobal('currencyChoices', Currency::getFormChoices());
     }
 
+    #[ArrayShape([ControllerEvent::class => "string"])]
     public static function getSubscribedEvents(): array
     {
         return [ControllerEvent::class => 'onControllerEvent',];

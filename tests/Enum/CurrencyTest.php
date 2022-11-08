@@ -8,16 +8,9 @@ use PHPUnit\Framework\TestCase;
 class CurrencyTest extends TestCase
 {
     /** @test */
-    public function should_return_form_choices_with_fullname_as_key_and_code_as_value()
+    public function should_return_currency_cases_without_default_language()
     {
-        $expected = [
-            'Euro' => 'eur',
-            'Polish Zloty' => 'pln',
-            'Pound Sterling' => 'gbp',
-            'Swiss Franc' => 'chf',
-            'U.S. Dollar' => 'usd',
-        ];
-        $this->assertEquals($expected, Currency::getFormChoices());
+        $this->assertFalse(in_array(Currency::POLISH_ZLOTY, Currency::getFormChoices()));
     }
 
     /** @test */
