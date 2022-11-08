@@ -45,13 +45,18 @@ class CurrencyController extends AbstractController
     public function conversionResult(Request $request): JsonResponse
     {
         $formData = $this->getPostData($request);
+        $primaryCurrency = Currency::from($formData[Exchange::ATTRIBUTE_PRIMARY_CURRENCY]);
+        $targetCurrency = Currency::from($formData[Exchange::ATTRIBUTE_TARGET_CURRENCY]);
+        $amount = $formData[Exchange::ATTRIBUTE_AMOUNT];
+
         $exchange = new Exchange();
         $exchange
-            ->setAmount($formData[Exchange::ATTRIBUTE_AMOUNT])
-            ->setPrimaryCurrency(Currency::from($formData[Exchange::ATTRIBUTE_PRIMARY_CURRENCY]))
-            ->setTargetCurrency(Currency::from($formData[Exchange::ATTRIBUTE_TARGET_CURRENCY]));
+            ->setAmount($amount)
+            ->setPrimaryCurrency($primaryCurrency)
+            ->setTargetCurrency($targetCurrency);
+        $conversionResult = CurrencyService::getConversion($exchange);
 
-        return new JsonResponse(CurrencyService::getConversion($exchange));
+        return new JsonResponse($primaryCurrency->getNameWithAmount($amount) . ' = ' . $targetCurrency->getNameWithAmount($conversionResult));
     }
 
     private function getPostData(Request $request): array

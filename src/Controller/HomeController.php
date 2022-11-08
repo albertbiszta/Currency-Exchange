@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ExchangeFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,6 +12,10 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        return $this->render('home/index.html.twig');
+        $form = $this->createForm(ExchangeFormType::class)->remove('submit');
+
+        return $this->render('home/index.html.twig', [
+            'exchange_form' => $form->createView(),
+        ]);
     }
 }

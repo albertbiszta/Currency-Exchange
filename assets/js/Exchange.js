@@ -47,7 +47,7 @@ class Exchange {
       .then(result => result.json())
       .then(result => {
         const alert = document.querySelector('div.alert-primary');
-        alert.innerHTML = `${this.amountField.value} ${this.primaryCurrency.value} = ${result} ${this.targetCurrency.value}`;
+        alert.innerHTML = result;
         alert.hidden = false;
       });
   }

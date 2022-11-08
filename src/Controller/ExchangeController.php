@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExchangeController extends AbstractController
 {
-    public function __construct(private ExchangeService $exchangeService)
+    public function __construct(private readonly ExchangeService $exchangeService)
     {
     }
 

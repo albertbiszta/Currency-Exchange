@@ -20,7 +20,7 @@ enum Currency: string
         return $this->value;
     }
 
-    public function getFullName(): string
+    public function getName(): string
     {
         return match ($this) {
             self::EURO => 'Euro',
@@ -31,6 +31,11 @@ enum Currency: string
         };
     }
 
+    public function getNameWithAmount(float $amount): string
+    {
+        return $amount . ' ' . $this->getName();
+    }
+
     public function isDefault(): bool
     {
         return $this === self::POLISH_ZLOTY;
@@ -38,7 +43,7 @@ enum Currency: string
 
     private static function getNames(): array
     {
-        return array_map(fn(self $currency) => $currency->getFullName(), self::cases());
+        return array_map(fn(self $currency) => $currency->getName(), self::cases());
     }
 
     private static function getCodes(): array

@@ -2,8 +2,18 @@
         {% block javascripts %}
             {{ parent() }}
             {{ encore_entry_script_tags('homeChart') }}
+            {{ encore_entry_script_tags('exchange') }}
         {% endblock %}
 {% block body %}
+    <div class="home-currency-calculator">
+        <h4>Currency converter</h4>
+        <div class="alert alert-primary" role="alert" hidden>
+        </div>
+        {% form_theme exchange_form 'bootstrap_5_layout.html.twig' %}
+        {{ form_start(exchange_form) }}
+        {{ form_end(exchange_form) }}
+    </div>
+
     <div class="currency-chart">
         <label for="currency-chart-select">Currency: </label>
         <select id="currency-chart-select">

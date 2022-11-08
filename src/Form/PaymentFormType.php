@@ -18,7 +18,7 @@ class PaymentFormType extends AbstractType
         $builder
             ->add('currency', EnumType::class, [
                 'class' => Currency::class,
-                'choice_label' => fn(Currency $currency) => $currency->getFullName(),
+                'choice_label' => fn(Currency $currency) => $currency->getName(),
             ])
             ->add('amount', NumberType::class)
             ->add('submit', SubmitType::class);

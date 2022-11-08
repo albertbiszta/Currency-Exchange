@@ -53,7 +53,7 @@ class UserAccountService extends Service
         }
         $newAmount = $userAccount->getAmount() - $amount;
         if ($newAmount < 0) {
-            throw new WithdrawException('You have insufficient funds. Your account balance is ' . $userAccount->getAmount() . ' ' . $userAccount->getCurrency()->getFullName());
+            throw new WithdrawException('You have insufficient funds. Your account balance is ' . $userAccount->getAmount() . ' ' . $userAccount->getCurrency()->getName());
         }
         $userAccount->setAmount($newAmount);
     }

@@ -18,11 +18,11 @@ class ExchangeFormType extends AbstractType
         $builder
             ->add(Exchange::ATTRIBUTE_PRIMARY_CURRENCY, EnumType::class, [
                 'class' => Currency::class,
-                'choice_label' => fn(Currency $currency) => $currency->getFullName(),
+                'choice_label' => fn(Currency $currency) => $currency->getName(),
             ])
             ->add(Exchange::ATTRIBUTE_TARGET_CURRENCY, EnumType::class, [
                 'class' => Currency::class,
-                'choice_label' => fn(Currency $currency) => $currency->getFullName(),
+                'choice_label' => fn(Currency $currency) => $currency->getName(),
             ])
             ->add(Exchange::ATTRIBUTE_AMOUNT, NumberType::class)
             ->add('submit', SubmitType::class);
