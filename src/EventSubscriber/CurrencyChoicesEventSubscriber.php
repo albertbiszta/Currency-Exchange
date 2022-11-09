@@ -18,7 +18,7 @@ class CurrencyChoicesEventSubscriber implements EventSubscriberInterface
 
     public function onControllerEvent(ControllerEvent $event): void
     {
-        $this->twig->addGlobal('currencyChoices', Currency::getFormChoices());
+        $this->twig->addGlobal('currencyChoices', Currency::getChoices());
     }
 
     #[ArrayShape([ControllerEvent::class => "string"])]

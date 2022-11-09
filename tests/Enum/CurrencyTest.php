@@ -12,7 +12,7 @@ class CurrencyTest extends TestCase
     /** @test */
     public function should_return_currency_cases_without_default_language()
     {
-        $this->assertFalse(in_array(Currency::POLISH_ZLOTY, Currency::getFormChoices()));
+        $this->assertFalse(in_array(Currency::POLISH_ZLOTY, Currency::getChoices()));
     }
 
     /** @test */

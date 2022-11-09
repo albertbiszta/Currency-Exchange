@@ -12,9 +12,9 @@ enum Currency: string
     case SWISS_FRANC = 'chf';
     case US_DOLLAR = 'usd';
 
-    public static function getFormChoices(): array
+    public static function getChoices(): array
     {
-        return array_filter(self::cases(), fn($currency) => !$currency->isDefault());
+        return array_filter(self::cases(), fn($currency) => !$currency->isMainCurrency());
     }
 
     public function getCode(): string
@@ -38,7 +38,7 @@ enum Currency: string
         return $amount . ' ' . $this->getName();
     }
 
-    public function isDefault(): bool
+    public function isMainCurrency(): bool
     {
         return $this === self::POLISH_ZLOTY;
     }

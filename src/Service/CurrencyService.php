@@ -34,7 +34,7 @@ class CurrencyService
 
     public static function getCurrentRate(Currency $currency): float
     {
-        return $currency->isDefault() ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
+        return $currency->isMainCurrency() ?  1 : self::getApiResponse($currency)['rates'][0]['mid'];
     }
 
     public static function getConversion(Exchange $exchange): float

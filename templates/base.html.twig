@@ -33,10 +33,11 @@
                         <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">Fluctuations in exchange rates</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'usd'}) }}">U.S. Dollar</a></li>
-                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'eur'}) }}">Euro</a></li>
-                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'chf'}) }}">Swiss Franc</a></li>
-                            <li><a class="dropdown-item" href="{{ path('chart', {currencyCode: 'gbp'}) }}">Pound Sterling</a></li>
+                            {% for currency in currencyChoices %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('chart', {currencyCode: currency.getCode}) }}">{{ currency.getName }}</a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ path('deposit') }}">Deposit</a></li>
