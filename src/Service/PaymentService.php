@@ -43,8 +43,8 @@ class PaymentService extends Service
                 ],
             ],
             'mode' => 'payment',
-            'success_url' => $this->router->generate('deposit_complete', ['paymentId' => $payment->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
-            'cancel_url' => $this->router->generate('deposit_cancel_url', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'success_url' => $this->getRoutePath('deposit_complete', ['paymentId' => $payment->getId()]),
+            'cancel_url' => $this->getRoutePath('deposit_cancel_url'),
         ]);
     }
 
@@ -64,5 +64,11 @@ class PaymentService extends Service
         $payment->setIsCompleted(true);
         $this->saveEntity($payment);
         $this->userAccountService->addToAccount($payment->getCurrency(), $payment->getAmount());
+    }
+
+
+    private function getRoutePath(string $name, array $params = []): string
+    {
+        return $this->router->generate($name, $params, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }
