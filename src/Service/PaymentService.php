@@ -66,7 +66,6 @@ class PaymentService extends Service
         $this->userAccountService->addToAccount($payment->getCurrency(), $payment->getAmount());
     }
 
-
     private function getRoutePath(string $name, array $params = []): string
     {
         return $this->router->generate($name, $params, UrlGeneratorInterface::ABSOLUTE_URL);
