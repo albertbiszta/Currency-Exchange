@@ -9,15 +9,14 @@ use PHPUnit\Framework\TestCase;
 
 class CurrencyTest extends TestCase
 {
-    /** @test */
-    public function should_return_currency_cases_without_default_language()
+    public function testShouldReturnCurrencyCasesWithoutDefaultLanguage()
     {
         $this->assertFalse(in_array(Currency::POLISH_ZLOTY, Currency::getChoices()));
     }
 
-    /** @test */
-    public function should_return_currency_by_code()
+    public function testShouldReturnCurrencyByCode()
     {
-        $this->assertEquals(Currency::POUND_STERLING, Currency::from('gbp'));
+        $this->assertEquals(Currency::POUND_STERLING, Currency::tryFrom('gbp'));
+        $this->assertEquals('', Currency::tryFrom('sss'));
     }
 }

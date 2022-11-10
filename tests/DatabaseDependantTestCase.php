@@ -7,9 +7,7 @@ use App\Entity\Payment;
 use App\Entity\User;
 use App\Entity\UserAccount;
 use App\Enum\Currency;
-use App\Enum\PaymentType;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -38,7 +36,7 @@ class DatabaseDependantTestCase extends WebTestCase
         $this->entityManager = null;
     }
 
-    protected function getRepository(string $entityName): EntityRepository
+    protected function getRepository(string $entityName)
     {
         return $this->entityManager->getRepository($entityName);
     }
@@ -61,19 +59,6 @@ class DatabaseDependantTestCase extends WebTestCase
         return $userAccount;
     }
 
-    protected function createPayment(User $user, float $amount, Currency $currency, bool $isCompleted = false, PaymentType $type = PaymentType::DEPOSIT): Payment
-    {
-        $payment = new Payment($type);
-        $payment->setUser($user)
-            ->setAmount($amount)
-            ->setCurrency($currency)
-            ->setIsCompleted($isCompleted)
-            ->setDate(new \DateTime);
-        $this->saveEntity($payment);
-
-        return $payment;
-    }
-
     protected function getLoggedUser(): User
     {
         $user = $this->createUser();
@@ -82,7 +67,7 @@ class DatabaseDependantTestCase extends WebTestCase
         return $user;
     }
 
-    private function saveEntity($entity)
+    protected function saveEntity($entity)
     {
         $this->entityManager->persist($entity);
         $this->entityManager->flush();

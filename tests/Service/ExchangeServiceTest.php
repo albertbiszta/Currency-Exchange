@@ -3,6 +3,7 @@
 namespace App\Tests\Service;
 
 use App\Entity\Exchange;
+use App\Entity\UserAccount;
 use App\Enum\Currency;
 use App\Exception\ExchangeException;
 use App\Repository\UserAccountRepository;
@@ -18,11 +19,10 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
     {
         parent::setUp();
         $this->exchangeService = $this->client->getContainer()->get(ExchangeService::class);
-        $this->userAccountRepository = $this->client->getContainer()->get(UserAccountRepository::class);
+        $this->userAccountRepository = $this->getRepository(UserAccount::class);
     }
 
-    /** @test */
-    public function should_throw_an_exception_when_account_balance_is_insufficient()
+    public function testShouldThrowAnExceptionWhenAccountBalanceIsInsufficient()
     {
         $this->expectException(ExchangeException::class);
         $user = $this->getLoggedUser();
@@ -35,8 +35,7 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
         $this->exchangeService->createExchange($exchange);
     }
 
-    /** @test */
-    public function should_create_an_exchange_and_update_account_balance()
+    public function testShouldCreateAnExchangeAndUpdateAccountBalance()
     {
         $user = $this->getLoggedUser();
         $this->assertEquals(0, $this->getNumberOfUserAccounts());

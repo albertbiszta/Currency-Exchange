@@ -35,8 +35,13 @@ class PaymentsCleanupCommand extends Command
             $this->entityManager->remove($payment);
         }
         $this->entityManager->flush();
-        $output->write("Deleted $numberOfPayments payments \n");
+        $output->write($this->getSuccessMessage($numberOfPayments) . PHP_EOL);
 
         return Command::SUCCESS;
+    }
+
+    private function getSuccessMessage(int $numberOfPayments): string
+    {
+        return "Deleted $numberOfPayments " . ($numberOfPayments === 1 ? 'payment' : 'payments');
     }
 }
