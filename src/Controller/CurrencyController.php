@@ -23,9 +23,10 @@ class CurrencyController extends AbstractController
         if (!$currency = Currency::tryFrom($currencyCode)) {
             return $this->redirectToRoute('home');
         }
+
         if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
             return $this->redirectToRoute('chart_with_days', [
-                'currency' => $currencyCode,
+                'currencyCode' => $currencyCode,
                 'numberOfDays' => $numberOfDaysLimit,
             ]);
         }
@@ -41,7 +42,7 @@ class CurrencyController extends AbstractController
     public function chartData(Request $request): JsonResponse
     {
         $data = $this->getPostData($request);
-        return new JsonResponse(CurrencyService::getLastDaysRates(Currency::from($data['currency']), $data['numberOfDays']));
+        return new JsonResponse(CurrencyService::getLastDaysRates(Currency::from($data['currencyCode']), $data['numberOfDays']));
     }
 
     #[Route('/api/currency/conversion', name: 'currency_conversion')]

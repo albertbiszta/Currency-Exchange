@@ -28,7 +28,7 @@ class Chart {
     fetch('/api/currency/chart', {
       method: 'POST',
       body: JSON.stringify({
-        currency: this.currencyCode,
+        currencyCode: this.currencyCode,
         numberOfDays: this.numberOfDays
       })
     })

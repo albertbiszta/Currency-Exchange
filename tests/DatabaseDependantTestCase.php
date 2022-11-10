@@ -44,7 +44,7 @@ class DatabaseDependantTestCase extends WebTestCase
     protected function createUser(): User
     {
         $user = new User();
-        $user->setEmail(rand(1, 99999) . 'email@test.example');
+        $user->setEmail(rand(1, 99999) . 'email@example.test');
         $user->setPassword('$argon2id$v=19$m=65536,t=6,p=1$AIC3IESQ64NgHfpVQZqviw$1c7M56xyiaQFBjlUBc7T0s53/PzZCjV56lbHnhOUXx8');
         $this->saveEntity($user);
 
