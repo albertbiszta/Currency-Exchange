@@ -4,12 +4,19 @@ class Chart {
   private currentChart: ChartJs<'line', Array<string>, unknown>;
   private currencyCode: string = 'usd';
   private numberOfDays: number = 7;
+  private localStorageKey: string = 'lastSelectedCurrencyOnChart';
 
   constructor() {
     this.getChart();
     const select = document.querySelector('select#currency-chart-select') as HTMLSelectElement;
+    const lastSelectedCurrencyIndex = localStorage.getItem(this.localStorageKey);
+    if (lastSelectedCurrencyIndex) {
+      select.selectedIndex = parseInt(lastSelectedCurrencyIndex);
+    }
+
     select.addEventListener('change', () => {
       this.currencyCode = select.value;
+      localStorage.setItem(this.localStorageKey, String(select.selectedIndex));
       this.getChart();
     })
     const numberOfDaysInput = document.querySelector('input#currency-chart-number-of-days') as HTMLInputElement;
