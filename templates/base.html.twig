@@ -35,7 +35,7 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             {% for currency in currencyChoices %}
                                 <li>
-                                    <a class="dropdown-item" href="{{ path('chart', {currencyCode: currency.getCode}) }}">{{ currency.getName }}</a>
+                                    <a class="dropdown-item" href="{{ path('chart', {currencySlug: currency.getSlug}) }}">{{ currency.getName }}</a>
                                 </li>
                             {% endfor %}
                         </ul>

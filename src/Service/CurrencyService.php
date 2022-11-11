@@ -12,6 +12,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class CurrencyService
 {
+    public const DEFAULT_NUMBER_OF_DAYS = 7;
     public const LIMIT_OF_NUMBER_OF_DAYS_ON_CHART = 90;
     private const URL = 'https://api.nbp.pl/api/exchangerates/rates/a/';
 

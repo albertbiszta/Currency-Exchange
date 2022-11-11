@@ -6,36 +6,41 @@ namespace App\Controller;
 
 use App\Entity\Exchange;
 use App\Enum\Currency;
+use App\Exception\CurrencyException;
 use App\Helper\Message;
 use App\Service\CurrencyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CurrencyController extends AbstractController
 {
-    #[Route('/currency/chart/{currencyCode}', name: 'chart')]
-    #[Route('/currency/chart/{currencyCode}/days/{numberOfDays}', name: 'chart_with_days')]
-    public function chart(string $currencyCode, int $numberOfDays = 7): Response
+    #[Route('/currency/chart/{currencySlug}', name: 'chart')]
+    #[Route('/currency/chart/{currencySlug}/days/{numberOfDays}', name: 'chart_with_days')]
+    public function chart(string $currencySlug, int $numberOfDays = CurrencyService::DEFAULT_NUMBER_OF_DAYS): Response
     {
-        if (!$currency = Currency::tryFrom($currencyCode)) {
+        try {
+            $currency = Currency::getBySlug($currencySlug);
+            $percentageChange = CurrencyService::getPercentageChange($currency, $numberOfDays);
+            if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
+                return $this->redirectToChart($currencySlug, $numberOfDaysLimit);
+            }
+
+            return $this->render('currency/chart.html.twig', [
+                'chart' => CurrencyService::getChart($currency, $numberOfDays),
+                'numberOfDays' => $numberOfDays,
+                'currencyPercentageChangeMessage' => Message::getCurrencyPercentageChangeMessage($percentageChange),
+            ]);
+        } catch (CurrencyException) {
+            if ($currency = Currency::tryFrom($currencySlug)) {
+                return $this->redirectToChart($currency->getSlug(), $numberOfDays);
+            }
+
             return $this->redirectToRoute('home');
         }
-
-        if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
-            return $this->redirectToRoute('chart_with_days', [
-                'currencyCode' => $currencyCode,
-                'numberOfDays' => $numberOfDaysLimit,
-            ]);
-        }
-
-        return $this->render('currency/chart.html.twig', [
-            'chart' => CurrencyService::getChart($currency, $numberOfDays),
-            'numberOfDays' => $numberOfDays,
-            'currencyPercentageChangeMessage' => Message::getCurrencyPercentageChangeMessage(CurrencyService::getPercentageChange($currency, $numberOfDays)),
-        ]);
     }
 
     #[Route('/api/currency/chart')]
@@ -60,6 +65,20 @@ class CurrencyController extends AbstractController
         $conversionResult = CurrencyService::getConversion($exchange);
 
         return new JsonResponse($primaryCurrency->getNameWithAmount($amount) . ' = ' . $targetCurrency->getNameWithAmount($conversionResult));
+    }
+
+    private function redirectToChart(string $currencySlug, int $numberOfDays): RedirectResponse
+    {
+        if ($numberOfDays === CurrencyService::DEFAULT_NUMBER_OF_DAYS) {
+            return $this->redirectToRoute('chart', [
+                'currencySlug' => $currencySlug,
+            ]);
+        }
+
+        return $this->redirectToRoute('chart_with_days', [
+            'currencySlug' => $currencySlug,
+            'numberOfDays' => $numberOfDays,
+        ]);
     }
 
     private function getPostData(Request $request): array

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use App\Exception\CurrencyException;
+
 enum Currency: string
 {
     case EURO = 'eur';
@@ -12,9 +14,22 @@ enum Currency: string
     case SWISS_FRANC = 'chf';
     case US_DOLLAR = 'usd';
 
+    /**
+     * @throws \App\Exception\CurrencyException
+     */
+    public static function getBySlug(string $slug): ?self
+    {
+        $matches = array_filter(self::cases(), fn(self $currency) => ($currency->getSlug() === $slug) && !$currency->isMainCurrency());
+        if (!$matches) {
+           throw new CurrencyException('Incorrect currency slug');
+        }
+
+        return reset($matches);
+    }
+
     public static function getChoices(): array
     {
-        return array_filter(self::cases(), fn($currency) => !$currency->isMainCurrency());
+        return array_filter(self::cases(), fn(self $currency) => !$currency->isMainCurrency());
     }
 
     public function getCode(): string
@@ -31,6 +46,11 @@ enum Currency: string
             self::SWISS_FRANC => 'Swiss Franc',
             self::US_DOLLAR => 'U.S. Dollar',
         };
+    }
+
+    public function getSlug(): string
+    {
+        return str_replace([' ', '.'], ['-', ''], mb_strtolower($this->getName()));
     }
 
     public function getNameWithAmount(float $amount): string
