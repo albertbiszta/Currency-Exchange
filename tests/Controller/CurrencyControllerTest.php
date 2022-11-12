@@ -28,4 +28,18 @@ class CurrencyControllerTest extends ControllerTestCase
         $this->requestGet('/currency/chart/usd');
         $this->assertResponseRedirects('/currency/chart/us-dollar');
     }
+
+    public function testShouldReturnCorrectChartData()
+    {
+        $numberOfDays = 5;
+        $this->requestPost('/api/currency/chart', [
+            'currencyCode' => Currency::EURO->getCode(),
+            'numberOfDays' => $numberOfDays,
+        ]);
+        $response = $this->client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $chartConfig = (array) json_decode($response->getContent());
+        $this->assertCount($numberOfDays, $chartConfig['data']->labels);
+        $this->assertCount($numberOfDays, $chartConfig['data']->datasets[0]->data);
+    }
 }
