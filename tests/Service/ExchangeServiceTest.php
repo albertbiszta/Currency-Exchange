@@ -27,12 +27,7 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
         $this->expectException(ExchangeException::class);
         $user = $this->getLoggedUser();
         $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY);
-        $exchange = new Exchange();
-        $exchange->setPrimaryCurrency($userAccount->getCurrency())
-            ->setTargetCurrency(Currency::EURO)
-            ->setAmount(100);
-
-        $this->exchangeService->createExchange($exchange);
+        $this->createExchange($userAccount->getCurrency(),);
     }
 
     public function testShouldCreateAnExchangeAndUpdateAccountBalance()
@@ -41,15 +36,19 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
         $this->assertEquals(0, $this->getNumberOfUserAccounts());
         $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY);
         $this->assertEquals(1, $this->getNumberOfUserAccounts());
-        $exchange = new Exchange();
-        $exchange
-            ->setPrimaryCurrency($userAccount->getCurrency())
-            ->setTargetCurrency(Currency::EURO)
-            ->setAmount(100);
-
-        $this->exchangeService->createExchange($exchange);
+        $this->createExchange($userAccount->getCurrency());
         $this->assertLessThan( 1000, $userAccount->getAmount());
         $this->assertEquals(2, $this->getNumberOfUserAccounts());
+    }
+
+    private function createExchange(Currency $primaryCurrency): void
+    {
+        $exchange = new Exchange();
+        $exchange
+            ->setPrimaryCurrency($primaryCurrency)
+            ->setTargetCurrency(Currency::EURO)
+            ->setAmount(100);
+        $this->exchangeService->createExchange($exchange);
     }
 
     private function getNumberOfUserAccounts(): int

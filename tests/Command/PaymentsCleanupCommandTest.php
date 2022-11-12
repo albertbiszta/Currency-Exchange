@@ -54,7 +54,8 @@ class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
     private function createPayment(User $user, bool $isCompleted = false): void
     {
         $payment = new Payment(PaymentType::DEPOSIT);
-        $payment->setUser($user)
+        $payment
+            ->setUser($user)
             ->setAmount(1000)
             ->setCurrency(Currency::EURO)
             ->setIsCompleted($isCompleted)
