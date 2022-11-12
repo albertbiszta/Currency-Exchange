@@ -25,7 +25,6 @@ class CurrencyController extends AbstractController
     {
         try {
             $currency = Currency::getBySlug($currencySlug);
-            $percentageChange = CurrencyService::getPercentageChange($currency, $numberOfDays);
             if ($numberOfDays > ($numberOfDaysLimit = CurrencyService::LIMIT_OF_NUMBER_OF_DAYS_ON_CHART)) {
                 return $this->redirectToChart($currencySlug, $numberOfDaysLimit);
             }
@@ -33,7 +32,7 @@ class CurrencyController extends AbstractController
             return $this->render('currency/chart.html.twig', [
                 'chart' => ChartService::getChart($currency, $numberOfDays),
                 'numberOfDays' => $numberOfDays,
-                'currencyPercentageChangeMessage' => Message::getCurrencyPercentageChangeMessage($percentageChange),
+                'currencyPercentageChangeMessage' => CurrencyService::getPercentageChangeMessage($currency, $numberOfDays),
             ]);
         } catch (CurrencyException) {
             if ($currency = Currency::tryFrom($currencySlug)) {

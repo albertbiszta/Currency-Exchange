@@ -51,11 +51,11 @@ class UserAccountService extends Service
     {
         $userAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $currency);
         if (!$userAccount) {
-            throw new WithdrawException('You do not have an account in this currency yet. Deposit funds.');
+            throw new WithdrawException(WithdrawException::NO_ACCOUNT_MESSAGE);
         }
         $newAmount = $userAccount->getAmount() - $amount;
         if ($newAmount < 0) {
-            throw new WithdrawException('You have insufficient funds. Your account balance is ' . $userAccount->getAmount() . ' ' . $userAccount->getCurrency()->getName());
+            throw new WithdrawException(WithdrawException::getInsufficientFoundsMessage($userAccount));
         }
         $userAccount->setAmount($newAmount);
     }

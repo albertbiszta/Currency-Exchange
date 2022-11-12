@@ -21,7 +21,7 @@ enum Currency: string
     {
         $matches = array_filter(self::cases(), fn(self $currency) => ($currency->getSlug() === $slug) && !$currency->isMainCurrency());
         if (!$matches) {
-           throw new CurrencyException('Incorrect currency slug');
+           throw new CurrencyException();
         }
 
         return reset($matches);

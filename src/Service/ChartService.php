@@ -21,14 +21,13 @@ class ChartService
             'labels' => $axesData[self::Y_AXIS_KEY],
             'datasets' => [
                 [
-                    'label' => Message::getChartLabel($currency, $numberOfDays),
+                    'label' => self::getLabel($currency, $numberOfDays),
                     'borderColor' => 'rgb(34, 72, 196)',
                     'data' => $axesData[self::Y_AXIS_KEY],
                     'tension' => 0.0,
                 ],
             ],
         ]);
-
         $chart->setOptions([
             'legend' => [
                 'display' => 'false',
@@ -58,7 +57,7 @@ class ChartService
                         'data' => $axesData[self::Y_AXIS_KEY],
                         'borderColor' => 'rgb(34, 72, 196)',
                         'fill' => false,
-                        'label' => Message::getChartLabel($currency, $numberOfDays),
+                        'label' => self::getLabel($currency, $numberOfDays),
                     ],
                 ],
             ]
@@ -74,5 +73,10 @@ class ChartService
         }
 
         return $data;
+    }
+
+    public static function getLabel(Currency $currency, int $numberOfDays): string
+    {
+        return $currency->getName() . " fluctuations in last $numberOfDays days";
     }
 }

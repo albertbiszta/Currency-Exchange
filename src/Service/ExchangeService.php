@@ -22,7 +22,7 @@ class ExchangeService extends Service
     public function createExchange(Exchange $exchange): ?Exchange
     {
         if (!$this->userAccountService->isAccountBalanceSufficient($exchange->getPrimaryCurrency(), $exchange->getAmount())) {
-            throw new ExchangeException('You have insufficient funds in that currency.');
+            throw new ExchangeException();
         }
 
         $amountAfterExchange = CurrencyService::getConversion($exchange);

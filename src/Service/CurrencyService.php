@@ -22,13 +22,11 @@ class CurrencyService
         ], self::getApiResponse($currency, "/last/$numberOfDays")['rates']);
     }
 
-    public static function getPercentageChange(Currency $currency, int $numberOfDays): float
+    public static function getPercentageChangeMessage(Currency $currency, int $numberOfDays): string
     {
-        $rates = self::getLastDaysRates($currency, $numberOfDays);
-        $lastIndex = count($rates) - 1;
-        $change = (($rates[$lastIndex]['rate']) - $rates[0]['rate']) / $rates[0]['rate'];
+        $percentageChange = self::getPercentageChange($currency, $numberOfDays);
 
-        return round($change * 100, 2);
+        return "Percentage change in the value of a currency between the first and last days of the chart: $percentageChange %";
     }
 
     public static function getCurrentRate(Currency $currency): float
@@ -50,6 +48,15 @@ class CurrencyService
             'date' => $dayData['effectiveDate'],
             'rate' => $dayData['mid'],
         ], self::getLastDaysRates($currency, $numberOfDays));
+    }
+
+    private static function getPercentageChange(Currency $currency, int $numberOfDays): float
+    {
+        $rates = self::getLastDaysRates($currency, $numberOfDays);
+        $lastIndex = count($rates) - 1;
+        $change = (($rates[$lastIndex]['rate']) - $rates[0]['rate']) / $rates[0]['rate'];
+
+        return round($change * 100, 2);
     }
 
     private static function getApiResponse(Currency $currency, string $extraPath = ''): array
