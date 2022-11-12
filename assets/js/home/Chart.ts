@@ -1,52 +1,71 @@
 import { Chart as ChartJs } from 'chart.js';
+import StorageInput from '../storage/StorageInput';
+import StorageSelect from '../storage/StorageSelect';
 
 class Chart {
-  private currentChart: ChartJs<'line', Array<string>, unknown>;
-  private currencyCode: string = 'usd';
-  private numberOfDays: number = 7;
-  private localStorageKey: string = 'lastSelectedCurrencyOnChart';
+    private readonly selectLocalStorageKey: string = 'lastSelectedCurrencyOnChart';
+    private readonly inputLocalStorageKey: string = 'lastSelectedNumberOfDaysOnChart';
+    private currentChart: ChartJs<'line', Array<string>, unknown>;
+    private currencyCode: string = 'eur';
+    private numberOfDays: number = 7;
+    private numberOfDaysInput: HTMLInputElement;
 
-  constructor() {
-    this.getChart();
-    const select = document.querySelector('select#currency-chart-select') as HTMLSelectElement;
-    const lastSelectedCurrencyIndex = localStorage.getItem(this.localStorageKey);
-    if (lastSelectedCurrencyIndex) {
-      select.selectedIndex = parseInt(lastSelectedCurrencyIndex);
+    public constructor() {
+        this.handleCurrencyChange();
+        this.handleNumberOfDaysChange();
+        this.build();
     }
 
-    select.addEventListener('change', () => {
-      this.currencyCode = select.value;
-      localStorage.setItem(this.localStorageKey, String(select.selectedIndex));
-      this.getChart();
-    })
-    const numberOfDaysInput = document.querySelector('input#currency-chart-number-of-days') as HTMLInputElement;
-    numberOfDaysInput.addEventListener('change', () => {
-      if (parseInt(numberOfDaysInput.value) > 90 || parseInt(numberOfDaysInput.value) < 0) {
-        alert('The range of days is from 1 to 90.');
-      } else {
-        this.numberOfDays = parseInt(numberOfDaysInput.value);
-        this.getChart();
-      }
-      numberOfDaysInput.value = String(this.numberOfDays);
-    })
-  }
+    private handleCurrencyChange(): void {
+        const currencySelect = document.querySelector('select#currency-chart-select') as HTMLSelectElement;
+        (new StorageSelect(this.selectLocalStorageKey)).handle(currencySelect);
+        this.currencyCode = currencySelect.value;
+        currencySelect.addEventListener('change', () => {
+            this.currencyCode = currencySelect.value;
+            this.build();
+        })
+    }
 
-  getChart() {
-    fetch('/api/currency/chart', {
-      method: 'POST',
-      body: JSON.stringify({
-        currencyCode: this.currencyCode,
-        numberOfDays: this.numberOfDays
-      })
-    })
-      .then(chartConfig => chartConfig.json())
-      .then(chartConfig => this.buildChart(chartConfig));
-  }
+    private handleNumberOfDaysChange(): void {
+        this.numberOfDaysInput = document.querySelector('input#currency-chart-number-of-days') as HTMLInputElement;
+        const storageInput = new StorageInput(this.inputLocalStorageKey);
+        storageInput.handle(this.numberOfDaysInput);
+        this.setNumberOfDays();
+        this.numberOfDaysInput.addEventListener('change', () => {
+            if (parseInt(this.numberOfDaysInput.value) > 90 || parseInt(this.numberOfDaysInput.value) < 0) {
+                alert('The range of days is from 1 to 90.');
+                this.setNumberOfDaysInputValue();
+            } else {
+                this.setNumberOfDays();
+                this.setNumberOfDaysInputValue();
+                storageInput.save(this.numberOfDaysInput.value);
+                this.build();
+            }
+        })
+    }
 
-  buildChart(chartConfig) {
-    this.currentChart && this.currentChart.destroy();
-    this.currentChart = new ChartJs('currencyChart', chartConfig);
-  }
+    private setNumberOfDays(): void {
+        this.numberOfDays = parseInt(this.numberOfDaysInput.value);
+    }
+
+    private setNumberOfDaysInputValue(): void {
+        this.numberOfDaysInput.value = String(this.numberOfDays);
+    }
+
+    private build(): void {
+        fetch('/api/currency/chart', {
+            method: 'POST',
+            body: JSON.stringify({
+                currencyCode: this.currencyCode,
+                numberOfDays: this.numberOfDays
+            })
+        })
+            .then(chartConfig => chartConfig.json())
+            .then(chartConfig => {
+                this.currentChart && this.currentChart.destroy();
+                this.currentChart = new ChartJs('currencyChart', chartConfig);
+            });
+    }
 }
 
 const homeChart = new Chart();

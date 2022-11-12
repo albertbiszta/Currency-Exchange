@@ -1,7 +1,7 @@
 class Chart {
   private numberOfDaysValue: number;
 
-  constructor() {
+  public constructor() {
     const input = document.querySelector('input#currency-chart-number-of-days') as HTMLInputElement;
     this.setNumberOfDays(input.value);
     input.addEventListener('change', () => {
@@ -10,20 +10,20 @@ class Chart {
     })
   }
 
-  getUrlWithDaysPath(): string {
-    return `/days/${this.numberOfDaysValue}`;
-  }
-
-  setNumberOfDays(value): void {
-    this.numberOfDaysValue = parseInt(value);
-  }
-
-  changeNumberOfDaysInUrl(): void {
+  private changeNumberOfDaysInUrl(): void {
     window.location.pathname = window.location.pathname.replace(/\/days\/\d+/, this.getUrlWithDaysPath());
   }
 
-  redirectToUrlWithDays(): void {
+  private getUrlWithDaysPath(): string {
+    return `/days/${this.numberOfDaysValue}`;
+  }
+
+  private redirectToUrlWithDays(): void {
     window.location.pathname = window.location.pathname + this.getUrlWithDaysPath();
+  }
+
+  private setNumberOfDays(value): void {
+    this.numberOfDaysValue = parseInt(value);
   }
 }
 

@@ -4,7 +4,7 @@ class Exchange {
     private primaryCurrency: HTMLSelectElement;
     private targetCurrency: HTMLSelectElement;
 
-    constructor() {
+    public constructor() {
         const formName: string = 'exchange_form';
         this.amountField = document.getElementById(`${formName}_amount`) as HTMLInputElement;
         this.primaryCurrency = document.getElementById(`${formName}_primaryCurrency`) as HTMLSelectElement;
@@ -16,12 +16,12 @@ class Exchange {
         this.selectTargetCurrencyOption(1);
     }
 
-    watchPrimaryCurrencyChange(): void {
+    private watchPrimaryCurrencyChange(): void {
         this.setTargetCurrencyOptions();
         this.showResult();
     }
 
-    setTargetCurrencyOptions(): void {
+    private setTargetCurrencyOptions(): void {
         this.changeHiddenAttribute(false);
         this.hiddenTargetCurrencyIndex = this.primaryCurrency.selectedIndex;
         this.changeHiddenAttribute(true);
@@ -30,15 +30,15 @@ class Exchange {
         }
     }
 
-    changeHiddenAttribute(value: boolean): void {
+    private changeHiddenAttribute(value: boolean): void {
         this.targetCurrency.options[this.hiddenTargetCurrencyIndex].hidden = value;
     }
 
-    selectTargetCurrencyOption(index): void {
+    private selectTargetCurrencyOption(index): void {
         this.targetCurrency.options[index].selected = true;
     }
 
-    showResult(): void {
+    private showResult(): void {
         fetch('/api/currency/conversion', {
             method: 'POST',
             body: JSON.stringify({
