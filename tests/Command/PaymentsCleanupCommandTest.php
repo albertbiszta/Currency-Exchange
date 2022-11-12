@@ -31,13 +31,8 @@ class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
         foreach ([false, false, true] as $isCompletedValue) {
             $this->createPayment($this->createUser(), $isCompletedValue);
         }
-        $incompletePayments = $this->paymentRepository->findBy(['is_completed' => false]);
-        $this->assertCount(2, $incompletePayments);
-        $this->assertCount(3, $this->paymentRepository->findAll());
-
+        $this->assertCount(2, $this->paymentRepository->findBy(['is_completed' => false]));
         $this->executeCommand();
-
-        $this->assertCount(0, $this->paymentRepository->findBy(['is_completed' => false]));
         $this->assertCount(1, $this->paymentRepository->findAll());
     }
 

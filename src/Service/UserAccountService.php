@@ -16,7 +16,7 @@ class UserAccountService extends Service
 {
     public function __construct(protected EntityManagerInterface $entityManager, protected Security $security, private readonly UserAccountRepository $userAccountRepository,)
     {
-        parent::__construct($this->entityManager, $security,);
+        parent::__construct($this->entityManager, $security);
     }
 
     public function isAccountBalanceSufficient(Currency $primaryCurrency, float $exchangeAmount): bool
