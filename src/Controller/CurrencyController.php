@@ -8,6 +8,7 @@ use App\Entity\Exchange;
 use App\Enum\Currency;
 use App\Exception\CurrencyException;
 use App\Helper\Message;
+use App\Service\ChartService;
 use App\Service\CurrencyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,7 +31,7 @@ class CurrencyController extends AbstractController
             }
 
             return $this->render('currency/chart.html.twig', [
-                'chart' => CurrencyService::getChart($currency, $numberOfDays),
+                'chart' => ChartService::getChart($currency, $numberOfDays),
                 'numberOfDays' => $numberOfDays,
                 'currencyPercentageChangeMessage' => Message::getCurrencyPercentageChangeMessage($percentageChange),
             ]);
@@ -47,7 +48,8 @@ class CurrencyController extends AbstractController
     public function chartData(Request $request): JsonResponse
     {
         $data = $this->getPostData($request);
-        return new JsonResponse(CurrencyService::getLastDaysRates(Currency::from($data['currencyCode']), $data['numberOfDays']));
+
+        return new JsonResponse(ChartService::getJsConfig(Currency::from($data['currencyCode']), $data['numberOfDays']));
     }
 
     #[Route('/api/currency/conversion', name: 'currency_conversion')]

@@ -39,37 +39,13 @@ class Chart {
         numberOfDays: this.numberOfDays
       })
     })
-      .then(result => result.json())
-      .then(result => {
-        const labels = [];
-        const rates = [];
-        result.forEach((day) => {
-          labels.push(day.date)
-          rates.push(this.formatRate(day.rate))
-        });
-        this.createChart(labels, rates);
-      });
+      .then(chartConfig => chartConfig.json())
+      .then(chartConfig => this.buildChart(chartConfig));
   }
 
-  createChart(labels: Array<string>, rates: Array<string>) {
+  buildChart(chartConfig) {
     this.currentChart && this.currentChart.destroy();
-    this.currentChart = new ChartJs('currencyChart', {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: rates,
-          borderColor: 'rgb(34, 72, 196)',
-          fill: false,
-          label: this.currencyCode.toUpperCase() + ' fluctuations in recent days',
-        },
-        ]
-      },
-    });
-  }
-
-  formatRate(rate) {
-    return (Number(rate)).toPrecision(4);
+    this.currentChart = new ChartJs('currencyChart', chartConfig);
   }
 }
 

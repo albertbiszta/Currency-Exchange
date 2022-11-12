@@ -7,8 +7,6 @@ namespace App\Service;
 use App\Entity\Exchange;
 use App\Enum\Currency;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\UX\Chartjs\Builder\ChartBuilder;
-use Symfony\UX\Chartjs\Model\Chart;
 
 class CurrencyService
 {
@@ -52,39 +50,6 @@ class CurrencyService
             'date' => $dayData['effectiveDate'],
             'rate' => $dayData['mid'],
         ], self::getLastDaysRates($currency, $numberOfDays));
-    }
-
-    public static function getChart(Currency $currency, int $numberOfDays): Chart
-    {
-        $days = [];
-        $rates = [];
-        foreach(self::getLastDaysRates($currency, $numberOfDays) as $rate) {
-            $days[] = $rate['date'];
-            $rates[] = round($rate['rate'], 3);
-        }
-        $chart = (new ChartBuilder())->createChart(Chart::TYPE_LINE);
-        $chart->setData([
-            'labels' => $days,
-            'datasets' => [
-                [
-                    'label' => strtoupper($currency->getCode()) . ' fluctuations in recent days',
-                    'borderColor' => 'rgb(34, 72, 196)',
-                    'data' => $rates,
-                    'tension' => 0.0,
-                ],
-            ],
-        ]);
-
-        $chart->setOptions([
-            'legend' => [
-                'display' => 'false',
-                'labels' => [
-                    'fontColor' => 'black',
-                ],
-            ],
-        ]);
-
-        return $chart;
     }
 
     private static function getApiResponse(Currency $currency, string $extraPath = ''): array
