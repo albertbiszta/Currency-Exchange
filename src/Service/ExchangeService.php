@@ -13,7 +13,7 @@ class ExchangeService extends Service
 {
     public function __construct(protected EntityManagerInterface $entityManager, protected Security $security, private readonly UserAccountService $userAccountService)
     {
-        parent::__construct($this->entityManager, $security);
+        parent::__construct($entityManager, $security);
     }
 
     /**
@@ -24,7 +24,6 @@ class ExchangeService extends Service
         if (!$this->userAccountService->isAccountBalanceSufficient($exchange->getPrimaryCurrency(), $exchange->getAmount())) {
             throw new ExchangeException();
         }
-
         $amountAfterExchange = CurrencyService::getConversion($exchange);
         $exchange->setMissingAttributes($this->getUser(), $amountAfterExchange);
         $this->saveEntity($exchange);

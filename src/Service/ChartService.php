@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Enum\Currency;
-use App\Helper\Message;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\UX\Chartjs\Builder\ChartBuilder;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -75,7 +76,7 @@ class ChartService
         return $data;
     }
 
-    public static function getLabel(Currency $currency, int $numberOfDays): string
+    private static function getLabel(Currency $currency, int $numberOfDays): string
     {
         return $currency->getName() . " fluctuations in last $numberOfDays days";
     }
