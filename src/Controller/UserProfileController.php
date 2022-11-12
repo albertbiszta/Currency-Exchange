@@ -8,22 +8,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserProfileController extends AbstractController
 {
-    private ?UserInterface $user;
-
-    public function __construct(Security $security)
+    public function __construct(private readonly Security $security)
     {
-        $this->user = $security->getUser();
     }
 
     #[Route('/profile', name: 'user_profile')]
     public function index(): Response
     {
         return $this->render('user_profile/index.html.twig', [
-            'accounts' => $this->user->getUserAccounts(),
+            'accounts' => $this->security->getUser()->getUserAccounts(),
         ]);
     }
 
@@ -31,7 +27,7 @@ class UserProfileController extends AbstractController
     public function exchanges(): Response
     {
         return $this->render('user_profile/exchanges.html.twig', [
-            'exchanges' => $this->user->getExchanges(),
+            'exchanges' => $this->security->getUser()->getExchanges(),
         ]);
     }
 
@@ -39,7 +35,7 @@ class UserProfileController extends AbstractController
     public function payments(): Response
     {
         return $this->render('user_profile/payments.html.twig', [
-            'payments' => $this->user->getPayments(),
+            'payments' => $this->security->getUser()->getPayments(),
         ]);
     }
 }
