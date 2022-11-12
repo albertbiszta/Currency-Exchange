@@ -42,7 +42,8 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
         $userAccount = $this->createUserAccount($user, 1000, Currency::POLISH_ZLOTY);
         $this->assertEquals(1, $this->getNumberOfUserAccounts());
         $exchange = new Exchange();
-        $exchange->setPrimaryCurrency($userAccount->getCurrency())
+        $exchange
+            ->setPrimaryCurrency($userAccount->getCurrency())
             ->setTargetCurrency(Currency::EURO)
             ->setAmount(100);
 
