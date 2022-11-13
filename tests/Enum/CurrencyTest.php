@@ -31,10 +31,4 @@ class CurrencyTest extends TestCase
     {
         $this->assertFalse(in_array(Currency::POLISH_ZLOTY, Currency::getChoices()));
     }
-
-    public function testShouldReturnCurrencyByCode()
-    {
-        $this->assertEquals(Currency::POUND_STERLING, Currency::tryFrom('gbp'));
-        $this->assertEquals('', Currency::tryFrom('sss'));
-    }
 }
