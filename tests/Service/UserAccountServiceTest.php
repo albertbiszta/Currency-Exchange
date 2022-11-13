@@ -42,12 +42,8 @@ class UserAccountServiceTest extends DatabaseDependantTestCase
     {
         $user = $this->getLoggedUser();
         $primaryCurrencyUserAccount = $this->createUserAccount($user, 100, Currency::EURO);
-        $exchange = new Exchange();
-        $exchange
-            ->setPrimaryCurrency($primaryCurrencyUserAccount->getCurrency())
-            ->setTargetCurrency(Currency::POLISH_ZLOTY)
-            ->setAmount(80)
-            ->setAmountAfterExchange(CurrencyService::getConversion($exchange));
+        $exchange = (new Exchange())->setInitAttributes($primaryCurrencyUserAccount->getCurrency(), Currency::POLISH_ZLOTY, 80);
+        $exchange->setAmountAfterExchange(CurrencyService::getConversion($exchange));
         $this->userAccountService->updateAccountsBalances($exchange);
         $this->assertEquals(20, $primaryCurrencyUserAccount->getAmount());
         $targetCurrencyUserAccount = $this->userAccountRepository->findOneByUserAndCurrency($user, $exchange->getTargetCurrency());

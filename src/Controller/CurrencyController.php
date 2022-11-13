@@ -58,11 +58,7 @@ class CurrencyController extends AbstractController
         $primaryCurrency = Currency::from($formData[Exchange::ATTRIBUTE_PRIMARY_CURRENCY]);
         $targetCurrency = Currency::from($formData[Exchange::ATTRIBUTE_TARGET_CURRENCY]);
         $amount = $formData[Exchange::ATTRIBUTE_AMOUNT];
-        $exchange = new Exchange();
-        $exchange
-            ->setAmount($amount)
-            ->setPrimaryCurrency($primaryCurrency)
-            ->setTargetCurrency($targetCurrency);
+        $exchange = (new Exchange())->setInitAttributes($primaryCurrency, $targetCurrency, $amount);
         $conversionResult = CurrencyService::getConversion($exchange);
 
         return new JsonResponse($primaryCurrency->getNameWithAmount($amount) . ' = ' . $targetCurrency->getNameWithAmount($conversionResult));

@@ -41,6 +41,14 @@ class Exchange
     #[ORM\JoinColumn(nullable: false)]
     private User $User;
 
+    public function setInitAttributes(Currency $primaryCurrency, Currency $targetCurrency, float $amount): self
+    {
+        return $this
+            ->setPrimaryCurrency($primaryCurrency)
+            ->setTargetCurrency($targetCurrency)
+            ->setAmount($amount);
+    }
+
     public function getId(): int
     {
         return $this->id;

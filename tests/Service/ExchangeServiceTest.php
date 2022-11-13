@@ -45,11 +45,7 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
 
     private function createExchange(Currency $primaryCurrency): void
     {
-        $exchange = new Exchange();
-        $exchange
-            ->setPrimaryCurrency($primaryCurrency)
-            ->setTargetCurrency(Currency::EURO)
-            ->setAmount(100);
+        $exchange = (new Exchange())->setInitAttributes($primaryCurrency, Currency::EURO, 100);
         $this->exchangeService->createExchange($exchange);
     }
 
