@@ -14,6 +14,11 @@ enum Currency: string
     case SWISS_FRANC = 'chf';
     case US_DOLLAR = 'usd';
 
+    public static function getChoices(): array
+    {
+        return array_filter(self::cases(), fn(self $currency) => !$currency->isMainCurrency());
+    }
+
     /**
      * @throws \App\Exception\CurrencyException
      */
@@ -21,15 +26,10 @@ enum Currency: string
     {
         $matches = array_filter(self::cases(), fn(self $currency) => ($currency->getSlug() === $slug) && !$currency->isMainCurrency());
         if (!$matches) {
-           throw new CurrencyException();
+            throw new CurrencyException();
         }
 
         return reset($matches);
-    }
-
-    public static function getChoices(): array
-    {
-        return array_filter(self::cases(), fn(self $currency) => !$currency->isMainCurrency());
     }
 
     public function getCode(): string
@@ -48,14 +48,14 @@ enum Currency: string
         };
     }
 
-    public function getSlug(): string
-    {
-        return str_replace([' ', '.'], ['-', ''], mb_strtolower($this->getName()));
-    }
-
     public function getNameWithAmount(float $amount): string
     {
         return $amount . ' ' . $this->getName();
+    }
+
+    public function getSlug(): string
+    {
+        return str_replace([' ', '.'], ['-', ''], mb_strtolower($this->getName()));
     }
 
     public function isMainCurrency(): bool

@@ -122,6 +122,9 @@ class Payment
         return $this->type;
     }
 
+    /**
+     * @used-by templates/payment/payment.html.twig
+     */
     public function getTypeName(): string
     {
         return $this->type->getName();
