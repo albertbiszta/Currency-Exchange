@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use App\Entity\Exchange;
@@ -20,20 +22,7 @@ class DatabaseDependantTestCase extends WebTestCase
     {
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
-        DatabasePrimer::prime($this->client->getKernel());
-    }
-
-    protected function tearDown(): void
-    {
-        foreach ([Exchange::class, Payment::class, User::class, UserAccount::class] as $className) {
-            foreach ($this->entityManager->getRepository($className)->findAll() as $entity) {
-                $this->entityManager->remove($entity);
-            }
-        }
-        $this->entityManager->flush();
-        parent::tearDown();
-        $this->entityManager->close();
-        $this->entityManager = null;
+        $this->clearDatabase();
     }
 
     protected function getRepository(string $entityName)
@@ -71,6 +60,17 @@ class DatabaseDependantTestCase extends WebTestCase
     protected function saveEntity($entity)
     {
         $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+    }
+
+
+    private function clearDatabase(): void
+    {
+        foreach ([Exchange::class, Payment::class, User::class, UserAccount::class] as $className) {
+            foreach ($this->entityManager->getRepository($className)->findAll() as $entity) {
+                $this->entityManager->remove($entity);
+            }
+        }
         $this->entityManager->flush();
     }
 }

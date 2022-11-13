@@ -15,7 +15,7 @@ use App\Tests\DatabaseDependantTestCase;
 class UserAccountServiceTest extends DatabaseDependantTestCase
 {
     private ?UserAccountService $userAccountService;
-    private ?UserAccountRepository $userAccountRepository;
+    private UserAccountRepository $userAccountRepository;
 
     protected function setUp(): void
     {

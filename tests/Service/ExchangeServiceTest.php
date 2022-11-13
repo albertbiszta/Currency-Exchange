@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service;
 
 use App\Entity\Exchange;
@@ -13,7 +15,7 @@ use App\Tests\DatabaseDependantTestCase;
 class ExchangeServiceTest extends DatabaseDependantTestCase
 {
     private ?ExchangeService $exchangeService;
-    private ?UserAccountRepository $userAccountRepository;
+    private UserAccountRepository $userAccountRepository;
 
     protected function setUp(): void
     {
