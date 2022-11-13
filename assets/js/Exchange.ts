@@ -49,9 +49,9 @@ class Exchange {
         })
             .then(result => result.json())
             .then(result => {
-                const alert = document.querySelector('div.alert-primary') as HTMLDivElement;
-                alert.innerHTML = result;
-                alert.hidden = false;
+                const infoField = document.querySelector('div.alert-primary') as HTMLDivElement;
+                infoField.innerHTML = result;
+                infoField.hidden = false;
             });
     }
 }
