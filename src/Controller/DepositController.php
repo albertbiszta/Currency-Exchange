@@ -26,10 +26,16 @@ final class DepositController extends PaymentController
        return $this->createPayment($request, PaymentType::DEPOSIT);
     }
 
-    #[Route('/deposit/complete/{paymentId}', name: 'deposit_complete')]
-    public function complete(int $paymentId): Response
+    #[Route('/deposit/cancel', name: 'deposit_cancel')]
+    public function cancel(): Response
     {
-        $this->depositService->complete($paymentId);
+        return $this->render('payment/cancel.html.twig');
+    }
+
+    #[Route('/deposit/complete', name: 'deposit_complete')]
+    public function complete(Request $request): Response
+    {
+        $this->depositService->complete((int) $request->get('paymentId'));
 
         return $this->redirectToRoute('deposit_success');
     }
@@ -38,12 +44,6 @@ final class DepositController extends PaymentController
     public function success(): Response
     {
         return $this->render('payment/success.html.twig');
-    }
-
-    #[Route('/deposit/cancel', name: 'deposit_cancel')]
-    public function cancel(): Response
-    {
-        return $this->render('payment/cancel.html.twig');
     }
 
     protected function handleFormSubmit(Payment $payment): RedirectResponse

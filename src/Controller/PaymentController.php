@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class PaymentController extends AbstractController
 {
-    protected const VIEW_TITLE = 'Make deposit';
+    protected const VIEW_TITLE = '';
 
     protected function createPayment(Request $request, PaymentType $paymentType): Response
     {
