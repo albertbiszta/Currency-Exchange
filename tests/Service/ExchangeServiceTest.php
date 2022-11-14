@@ -7,12 +7,12 @@ namespace App\Tests\Service;
 use App\Entity\Exchange;
 use App\Entity\UserAccount;
 use App\Enum\Currency;
-use App\Exception\ExchangeException;
+use App\Exception\InsufficientFoundsException;
 use App\Repository\UserAccountRepository;
 use App\Service\ExchangeService;
 use App\Tests\DatabaseDependantTestCase;
 
-class ExchangeServiceTest extends DatabaseDependantTestCase
+final class ExchangeServiceTest extends DatabaseDependantTestCase
 {
     private ?ExchangeService $exchangeService;
     private UserAccountRepository $userAccountRepository;
@@ -26,7 +26,7 @@ class ExchangeServiceTest extends DatabaseDependantTestCase
 
     public function testShouldThrowAnExceptionWhenAccountBalanceIsInsufficient()
     {
-        $this->expectException(ExchangeException::class);
+        $this->expectException(InsufficientFoundsException::class);
         $user = $this->getLoggedUser();
         $userAccount = $this->createUserAccount($user, 50, Currency::POLISH_ZLOTY);
         $this->createExchange($userAccount->getCurrency(),);

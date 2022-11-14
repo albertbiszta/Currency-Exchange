@@ -12,7 +12,7 @@ use App\Service\CurrencyService;
 use App\Service\UserAccountService;
 use App\Tests\DatabaseDependantTestCase;
 
-class UserAccountServiceTest extends DatabaseDependantTestCase
+final class UserAccountServiceTest extends DatabaseDependantTestCase
 {
     private ?UserAccountService $userAccountService;
     private UserAccountRepository $userAccountRepository;

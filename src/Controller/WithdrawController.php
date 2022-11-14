@@ -6,14 +6,15 @@ namespace App\Controller;
 
 use App\Entity\Payment;
 use App\Enum\PaymentType;
-use App\Exception\WithdrawException;
+use App\Exception\InsufficientFoundsException;
+use App\Exception\NoUserAccountException;
 use App\Service\Payment\WithdrawService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class WithdrawController extends PaymentController
+final class WithdrawController extends PaymentController
 {
     protected const VIEW_TITLE = 'Make withdraw';
 
@@ -21,19 +22,18 @@ class WithdrawController extends PaymentController
     {
     }
 
-
     #[Route('/withdraw', name: 'withdraw')]
     public function createWithdraw(Request $request): Response
     {
-       return $this->createPayment($request, PaymentType::WITHDRAW);
+        return $this->createPayment($request, PaymentType::WITHDRAW);
     }
 
-    protected function handle(Payment $payment): RedirectResponse
+    protected function handleFormSubmit(Payment $payment): RedirectResponse
     {
         try {
             $this->withdrawService->handle($payment);
             $this->addFlash('success', 'Withdraw completed successfully.');
-        } catch (WithdrawException $e) {
+        } catch (InsufficientFoundsException|NoUserAccountException $e) {
             $this->addFlash('error', $e->getMessage());
         } catch (\Exception) {
             $this->addFlash('error', 'An error has occurred during the withdraw.');

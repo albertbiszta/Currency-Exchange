@@ -13,7 +13,7 @@ use App\Tests\DatabaseDependantTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
+final class PaymentsCleanupCommandTest extends DatabaseDependantTestCase
 {
     private CommandTester $commandTester;
     private PaymentRepository $paymentRepository;

@@ -7,7 +7,7 @@ namespace App\Tests\Controller;
 use App\Enum\Currency;
 use App\Service\CurrencyService;
 
-class CurrencyControllerTest extends ControllerTestCase
+final class CurrencyControllerTest extends ControllerTestCase
 {
     public function testShouldRedirectToHomepageWhenCurrencySlugIsInvalidInChartRoute()
     {

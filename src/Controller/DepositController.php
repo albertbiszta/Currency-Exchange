@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DepositController extends PaymentController
+final class DepositController extends PaymentController
 {
     protected const VIEW_TITLE = 'Make deposit';
 
@@ -46,7 +46,7 @@ class DepositController extends PaymentController
         return $this->render('payment/cancel.html.twig');
     }
 
-    protected function handle(Payment $payment): RedirectResponse
+    protected function handleFormSubmit(Payment $payment): RedirectResponse
     {
         $session = $this->depositService->handle($payment);
         return $this->redirect($session->url, 303);

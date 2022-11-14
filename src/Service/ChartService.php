@@ -19,7 +19,7 @@ class ChartService
         $axesData = self::getAxesData($currency, $numberOfDays);
         $chart = (new ChartBuilder())->createChart(Chart::TYPE_LINE);
         $chart->setData([
-            'labels' => $axesData[self::Y_AXIS_KEY],
+            'labels' => $axesData[self::X_AXIS_KEY],
             'datasets' => [
                 [
                     'label' => self::getLabel($currency, $numberOfDays),

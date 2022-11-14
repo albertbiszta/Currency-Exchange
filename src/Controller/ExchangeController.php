@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Exchange;
-use App\Exception\ExchangeException;
+use App\Exception\InsufficientFoundsException;
 use App\Form\ExchangeFormType;
 use App\Service\ExchangeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +28,7 @@ class ExchangeController extends AbstractController
             try {
                 $this->exchangeService->createExchange($form->getData());
                 $this->addFlash('success', 'Currency exchange completed successfully.');
-            } catch (ExchangeException $e) {
+            } catch (InsufficientFoundsException $e) {
                 $this->addFlash('error', $e->getMessage());
             } catch (\Exception) {
                 $this->addFlash('error', 'An error has occurred during the exchange.');

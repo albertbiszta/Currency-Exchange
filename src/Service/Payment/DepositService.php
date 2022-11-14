@@ -14,7 +14,7 @@ use Stripe\Stripe;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 
-class DepositService extends Service
+final class DepositService extends Service
 {
     public function __construct(
         protected EntityManagerInterface $entityManager,

@@ -10,7 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PaymentsCleanupCommand extends Command
+final class PaymentsCleanupCommand extends Command
 {
     protected static $defaultName = 'app:delete-incomplete-payments';
 

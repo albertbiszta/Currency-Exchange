@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Entity\Exchange;
 use App\Enum\Currency;
 use App\Exception\CurrencyException;
-use App\Helper\Message;
 use App\Service\ChartService;
 use App\Service\CurrencyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CurrencyController extends AbstractController
+final class CurrencyController extends AbstractController
 {
     #[Route('/currency/chart/{currencySlug}', name: 'chart')]
     #[Route('/currency/chart/{currencySlug}/days/{numberOfDays}', name: 'chart_with_days')]

@@ -7,7 +7,8 @@ namespace App\Service;
 use App\Entity\Exchange;
 use App\Entity\UserAccount;
 use App\Enum\Currency;
-use App\Exception\WithdrawException;
+use App\Exception\InsufficientFoundsException;
+use App\Exception\NoUserAccountException;
 use App\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -45,17 +46,17 @@ class UserAccountService extends Service
     }
 
     /**
-     * @throws \App\Exception\WithdrawException
+     * @throws \App\Exception\NoUserAccountException|\App\Exception\InsufficientFoundsException
      */
     public function subtractFromAccount(Currency $currency, float $amount): void
     {
         $userAccount = $this->userAccountRepository->findOneByUserAndCurrency($this->getUser(), $currency);
         if (!$userAccount) {
-            throw new WithdrawException(WithdrawException::NO_ACCOUNT_MESSAGE);
+            throw new NoUserAccountException();
         }
         $newAmount = $userAccount->getAmount() - $amount;
         if ($newAmount < 0) {
-            throw new WithdrawException(WithdrawException::getInsufficientFoundsMessage($userAccount));
+            throw new InsufficientFoundsException(InsufficientFoundsException::buildMessageWithAccountBalance($userAccount));
         }
         $userAccount->setAmount($newAmount);
     }

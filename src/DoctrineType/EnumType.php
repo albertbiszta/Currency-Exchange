@@ -32,5 +32,11 @@ abstract class EnumType extends Type
         return $this::getClass()::tryFrom($value);
     }
 
+
+    public function getName(): string
+    {
+        return static::NAME;
+    }
+
     abstract public static function getClass(): string;
 }

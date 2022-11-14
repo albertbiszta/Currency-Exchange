@@ -8,7 +8,7 @@ use App\Enum\Currency;
 use App\Exception\CurrencyException;
 use PHPUnit\Framework\TestCase;
 
-class CurrencyTest extends TestCase
+final class CurrencyTest extends TestCase
 {
     public function testShouldReturnCorrectSlug()
     {

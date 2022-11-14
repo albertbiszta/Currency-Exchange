@@ -10,7 +10,7 @@ use App\Service\UserAccountService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
-class WithdrawService extends Service
+final class WithdrawService extends Service
 {
     public function __construct(protected EntityManagerInterface $entityManager, protected Security $security, private readonly UserAccountService $userAccountService,)
     {
@@ -18,7 +18,8 @@ class WithdrawService extends Service
     }
 
     /**
-     * @throws \App\Exception\WithdrawException
+     * @throws \App\Exception\InsufficientFoundsException
+     * @throws \App\Exception\NoUserAccountException
      */
     public function handle(Payment $payment): void
     {

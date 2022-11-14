@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class RegistrationController extends AbstractController
+final class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
@@ -23,12 +23,8 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-            $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
+            $user->setPassword($password);
             $entityManager->persist($user);
             $entityManager->flush();
 

@@ -21,7 +21,7 @@ abstract class PaymentController extends AbstractController
         $form = $this->createForm(PaymentFormType::class, new Payment($paymentType));
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-           return static::handle($form->getData());
+           return static::handleFormSubmit($form->getData());
         }
 
         return $this->renderPaymentView($form);
@@ -35,5 +35,5 @@ abstract class PaymentController extends AbstractController
         ]);
     }
 
-    protected abstract function handle(Payment $payment);
+    protected abstract function handleFormSubmit(Payment $payment);
 }
