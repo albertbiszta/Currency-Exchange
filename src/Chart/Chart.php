@@ -39,5 +39,4 @@ abstract class Chart
             $this->rates[] = round($rate['rate'], 3);
         }
     }
-
 }
